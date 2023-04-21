@@ -1,6 +1,20 @@
 # DL02
 Repository for the DL02 course, apr 2023, Universiteit van Amsterdam
 
+# Set up environment
+First create virtual environment with the correct python version. We name the env `gvp` here.
+Then install all the packages needed for the GVP.
+Clone the github repo with all the GVP files.
+Go in to folder.
+Might need the flag `SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True` in order to install the files. 
+```bash
+conda create -n gvp python==3.6.13
+pip install -r requirements.txt
+git clone https://github.com/drorlab/gvp-pytorch.git
+cd gvp-pytorch
+SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True pip install .
+```
+
 # Schedule [OUTDATED]
 
 Below you can find the schedule, grouped per module
