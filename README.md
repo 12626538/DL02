@@ -50,6 +50,6 @@ Below you can find the schedule, grouped per module
 
 **TODO**[This is still work in progress] First make sure to create an enviornment with the requirements in the GVP repo. [This file](./install_env.job) should do the job, but has not been shown to work....
 
-Download the dataset files in some directory. If you are planning to use [`run_atom3d.py`](./gvp-pytorch/run_atom3d.py), keep the file structure found [here](https://github.com/drorlab/gvp-pytorch/blob/82af6b22eaf8311c15733117b0071408d24ed877/run_atom3d.py#L207).
+Download the dataset files in some directory. If you are planning to use [`run_atom3d.py`](./gvp-pytorch/run_atom3d.py), keep the file structure found [here](https://github.com/drorlab/gvp-pytorch/blob/82af6b22eaf8311c15733117b0071408d24ed877/run_atom3d.py#L207). The `--data` argument in `run_atom3d.py` replaces the `atom3d-data`, so you can specify what directory you use.
 
 Take a look at a job file like [this one](./run_atom3d.job) to try to understand what needs to happen to run LISA.

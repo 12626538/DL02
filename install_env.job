@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#SBATCH --gres=gpu:0
+#SBATCH --job-name=InstallEnvironment
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=3
+#SBATCH --time=04:00:00
+#SBATCH --mem=32000M
+#SBATCH --output=job_logs/slurm_output_%A.out
+
+#WARNING
+# This file might not work correctly.
+# these are the commands I executed to make it work
+# but I did this manually, and running this script
+# did not work very time
+
+
+module purge
+module load 2021
+module load Anaconda3/2021.05
+
+echo "Creating ENV"
+conda create --name gedl python=3.6.13
+
+echo "Activating ENV"
+source activate gedl
+
+conda install pip
+
+echo "Installing torch dependencies using PIP"
+pip install torch==1.8.1
+pip install torch_sparse torch_geometric==1.7.0 torch_scatter==2.0.6 torch_cluster==1.5.9 atom3d==0.2.1
+
+echo "Installing GVP"
+cd $HOME/DL02/gvp-pytorch/
+python setup.py develop
+
