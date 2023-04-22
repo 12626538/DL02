@@ -6,7 +6,7 @@ First create virtual environment with the correct python version. We name the en
 Then install all the packages needed for the GVP.
 Clone the github repo with all the GVP files.
 Go in to folder.
-Might need the flag `SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True` in order to install the files. 
+Might need the flag `SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True` in order to install the files.
 ```bash
 conda create -n gvp python==3.6.13
 pip install -r requirements.txt
@@ -44,3 +44,12 @@ Below you can find the schedule, grouped per module
 - Lecture, apr 25 9-11, G3.02
 - Lecture, may 09 9-11, G3.02
 - Lecture, may 11 9-11, G3.02
+
+
+# Usage on LISA
+
+**TODO**[This is still work in progress] First make sure to create an enviornment with the requirements in the GVP repo. [This file](./install_env.job) should do the job, but has not been shown to work....
+
+Download the dataset files in some directory. If you are planning to use [`run_atom3d.py`](./gvp-pytorch/run_atom3d.py), keep the file structure found [here](https://github.com/drorlab/gvp-pytorch/blob/82af6b22eaf8311c15733117b0071408d24ed877/run_atom3d.py#L207).
+
+Take a look at a job file like [this one](./run_atom3d.job) to try to understand what needs to happen to run LISA.
