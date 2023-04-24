@@ -3,6 +3,14 @@ Copied from https://github.com/drorlab/gvp-pytorch/blob/82af6b22eaf8311c15733117
 And altered for our use
 """
 
+# Supresses the following warning:
+#   UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. 
+#   This should only matter to you if you are using storages directly.  
+#   To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+# Source yet undetermined
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -34,6 +42,8 @@ parser.add_argument('--save', metavar='DIR', default='models',
                     help='directory to save models to')
 parser.add_argument('--data', metavar='DIR', default='atom3d-data/',
                     help='directory to data')
+parser.add_argument('--monitor', action='store_true',
+                    help='trigger tensorboard monitoring')
 
 args = parser.parse_args()
 
@@ -49,6 +59,13 @@ import numpy as np
 import sklearn.metrics as sk_metrics
 from collections import defaultdict
 import scipy.stats as stats
+
+# For tensorboard view
+from torch.utils.tensorboard import SummaryWriter
+# avoid creating an event file when we don't want one
+if args.monitor:
+    writer = SummaryWriter()
+
 print = partial(print, flush=True)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -56,7 +73,7 @@ model_id = float(time.time())
 
 def main():
     datasets = get_datasets(args.task, args.data, args.lba_split)
-    dataloader = partial(torch_geometric.data.DataLoader,
+    dataloader = partial(torch_geometric.loader.DataLoader,
                     num_workers=args.num_workers, batch_size=args.batch)
     if args.task not in ['PPI', 'RES']:
         dataloader = partial(dataloader, shuffle=True)
@@ -107,10 +124,20 @@ def train(model, trainset, valset):
         path = f"{args.save}/{args.task}_{model_id}_{epoch}.pt"
         torch.save(model.state_dict(), path)
         print(f'\nEPOCH {epoch} TRAIN loss: {loss:.8f}')
+
+        if args.monitor:
+            # Added for tensorboard view
+            writer.add_scalars(f"{args.task} training loss", {f'smp-index {args.smp_idx}': loss}, epoch)
+
         model.eval()
         with torch.no_grad():
             loss = loop(valset, model, max_time=args.val_time)
         print(f'\nEPOCH {epoch} VAL loss: {loss:.8f}')
+
+        if args.monitor:
+            # Added for tensorboard view
+            writer.add_scalars(f"{args.task} validation loss", {f'smp-index {args.smp_idx}': loss}, epoch)
+
         if loss < best_val:
             best_path, best_val = path, loss
         print(f'BEST {best_path} VAL loss: {best_val:.8f}')
