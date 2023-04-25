@@ -4,8 +4,8 @@ And altered for our use
 """
 
 # Supresses the following warning:
-#   UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. 
-#   This should only matter to you if you are using storages directly.  
+#   UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class.
+#   This should only matter to you if you are using storages directly.
 #   To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
 # Source yet undetermined
 import warnings
@@ -59,6 +59,9 @@ import numpy as np
 import sklearn.metrics as sk_metrics
 from collections import defaultdict
 import scipy.stats as stats
+
+import warnings
+warnings.filterwarnings('ignore', '.*TypedStorage is deprecated.*')
 
 # For tensorboard view
 from torch.utils.tensorboard import SummaryWriter
