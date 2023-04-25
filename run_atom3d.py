@@ -80,6 +80,7 @@ def main():
 
     trainset, valset, testset = map(dataloader, datasets)
     model = get_model(args.task).to(device)
+    model = nn.DataParallel(model)
 
     if args.test:
         test(model, testset)
