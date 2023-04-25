@@ -55,13 +55,10 @@ import gvp.atom3d
 import torch.nn as nn
 import tqdm, torch, time, os
 import numpy as np
-# from atom3d.util import metrics
+from atom3d.util import metrics
 import sklearn.metrics as sk_metrics
 from collections import defaultdict
 import scipy.stats as stats
-
-import warnings
-warnings.filterwarnings('ignore', '.*TypedStorage is deprecated.*')
 
 # For tensorboard view
 from torch.utils.tensorboard import SummaryWriter
@@ -210,22 +207,22 @@ def get_metrics(task):
             _predict[_id].append(_p)
         return np.mean([metric(_targets[_id], _predict[_id]) for _id in _targets])
 
-    # correlations = {
-    #     'pearson': partial(_correlation, metrics.pearson),
-    #     'kendall': partial(_correlation, metrics.kendall),
-    #     'spearman': partial(_correlation, metrics.spearman)
-    # }
-    # mean_correlations = {f'mean {k}' : partial(v, glob=False) \
-    #                         for k, v in correlations.items()}
+    correlations = {
+        'pearson': partial(_correlation, metrics.pearson),
+        'kendall': partial(_correlation, metrics.kendall),
+        'spearman': partial(_correlation, metrics.spearman)
+    }
+    mean_correlations = {f'mean {k}' : partial(v, glob=False) \
+                            for k, v in correlations.items()}
 
     return {
-        # 'RSR' : {**correlations, **mean_correlations},
-        # 'PSR' : {**correlations, **mean_correlations},
-        # 'PPI' : {'auroc': metrics.auroc},
-        # 'RES' : {'accuracy': metrics.accuracy},
-        # 'MSP' : {'auroc': metrics.auroc, 'auprc': metrics.auprc},
-        # 'LEP' : {'auroc': metrics.auroc, 'auprc': metrics.auprc},
-        # 'LBA' : {**correlations, 'rmse': partial(sk_metrics.mean_squared_error, squared=False)},
+        'RSR' : {**correlations, **mean_correlations},
+        'PSR' : {**correlations, **mean_correlations},
+        'PPI' : {'auroc': metrics.auroc},
+        'RES' : {'accuracy': metrics.accuracy},
+        'MSP' : {'auroc': metrics.auroc, 'auprc': metrics.auprc},
+        'LEP' : {'auroc': metrics.auroc, 'auprc': metrics.auprc},
+        'LBA' : {**correlations, 'rmse': partial(sk_metrics.mean_squared_error, squared=False)},
         'SMP' : {'mae': sk_metrics.mean_absolute_error}
     }[task]
 
