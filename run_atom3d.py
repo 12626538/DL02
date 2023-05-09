@@ -15,7 +15,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('task', metavar='TASK', choices=[
-        'SMP', 'PSR', 'RSR', 'MSP', 'SMP', 'LBA', 'LEP', #'PPI', 'RES'
+        'SMP', 'PSR', 'RSR', 'MSP', 'SMP', 'LBA', 'LEP', 'PPI', 'RES'
     ], help="{PSR, RSR, PPI, RES, MSP, SMP, LBA, LEP}")
 parser.add_argument('--num-workers', metavar='N', type=int, default=4,
                    help='number of threads for loading data, default=4')
