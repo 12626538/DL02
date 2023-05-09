@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
 #SBATCH --time=04:00:00
-#SBATCH --mem=32000M
+#SBATCH --mem=48000M
 #SBATCH --output=job_logs/slurm_output_DownloadData_%A.out
 
 DATA_DIR=$HOME/data/
@@ -64,4 +64,27 @@ then
     cd $DATA_DIR/SMP/splits/
     wget -nv https://zenodo.org/record/4911142/files/SMP-random.tar.gz?download=1 -O "SMP-random.tar.gz"
     tar -xzf "SMP-random.tar.gz"
+fi
+
+# RES
+if [ ! -d $DATA_DIR/RES/ ]
+then
+    mkdir -p $DATA_DIR/RES/raw/
+    cd $DATA_DIR/RES/raw/
+    wget -nv https://zenodo.org/record/5026743/files/RES-raw.tar.gz?download=1 -O "RES-raw.tar.gz"
+    tar -xzf "RES-raw.tar.gz"
+
+    mkdir -p $DATA_DIR/RES/splits/
+    cd $DATA_DIR/RES/splits/
+    wget -nv https://zenodo.org/record/5026743/files/RES-split-by-cath-topology-indices.tar.gz?download=1 -O "RES-split-by-cath-topology-indices.tar.gz"
+    tar -xzf "RES-split-by-cath-topology-indices.tar.gz"
+fi
+
+# PPI
+if [ ! -d $DATA_DIR/PPI/ ]
+then
+    mkdir -p $DATA_DIR/PPI/splits/
+    cd $DATA_DIR/PPI/splits/
+    wget -nv https://zenodo.org/record/4911102/files/PPI-DIPS-split.tar.gz?download=1 -O "PPI-DIPS-split.tar.gz"
+    tar -xzf "PPI-DIPS-split.tar.gz"
 fi
