@@ -1,0 +1,67 @@
+#!/bin/bash
+
+#SBATCH --partition=normal
+#SBATCH --job-name=DownloadDatasets
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=3
+#SBATCH --time=04:00:00
+#SBATCH --mem=32000M
+#SBATCH --output=job_logs/slurm_output_DownloadData_%A.out
+
+DATA_DIR=$HOME/data/
+
+# RSR
+if [ ! -d $DATA_DIR/RSR/ ]
+then
+    mkdir -p $DATA_DIR/RSR/splits/
+    cd $DATA_DIR/RSR/splits/
+    wget -nv https://zenodo.org/record/4961085/files/RSR-candidates-split-by-time.tar.gz?download=1 -O "RSR-candidates-split-by-time.tar.gz"
+    tar -xzf "RSR-candidates-split-by-time.tar.gz"
+fi
+
+# PSR
+if [ ! -d $DATA_DIR/PSR/ ]
+then
+    mkdir -p $DATA_DIR/PSR/splits/
+    cd $DATA_DIR/PSR/splits/
+    wget -nv https://zenodo.org/record/4915648/files/PSR-split-by-year.tar.gz?download=1 -O "PSR-split-by-year.tar.gz"
+    tar -xzf "PSR-split-by-year.tar.gz"
+fi
+
+# MSP
+if [ ! -d $DATA_DIR/MSP/ ]
+then
+    mkdir -p $DATA_DIR/MSP/splits/
+    cd $DATA_DIR/MSP/splits/
+    wget -nv https://zenodo.org/record/4962515/files/MSP-split-by-sequence-identity-30.tar.gz?download=1 -O "MSP-split-by-sequence-identity-30.tar.gz"
+    tar -xzf "MSP-split-by-sequence-identity-30.tar.gz"
+fi
+
+# LEP
+if [ ! -d $DATA_DIR/LEP/ ]
+then
+    mkdir -p $DATA_DIR/LEP/splits/
+    cd $DATA_DIR/LEP/splits/
+    wget -nv https://zenodo.org/record/4914734/files/LEP-split-by-protein.tar.gz?download=1 -O "LEP-split-by-protein.tar.gz"
+    tar -xzf "LEP-split-by-protein.tar.gz"
+fi
+
+# LBA
+if [ ! -d $DATA_DIR/LBA/ ]
+then
+    mkdir -p $DATA_DIR/LBA/splits/
+    cd $DATA_DIR/LBA/splits/
+    wget -nv https://zenodo.org/record/4914718/files/LBA-split-by-sequence-identity-60.tar.gz?download=1 -O "LBA-split-by-sequence-identity-60.tar.gz"
+    tar -xzf "LBA-split-by-sequence-identity-60.tar.gz"
+    wget -nv https://zenodo.org/record/4914718/files/LBA-split-by-sequence-identity-30.tar.gz?download=1 -O "LBA-split-by-sequence-identity-30.tar.gz"
+    tar -xzf "LBA-split-by-sequence-identity-30.tar.gz"
+fi
+
+# SMP
+if [ ! -d $DATA_DIR/SMP/ ]
+then
+    mkdir -p $DATA_DIR/SMP/splits/
+    cd $DATA_DIR/SMP/splits/
+    wget -nv https://zenodo.org/record/4911142/files/SMP-random.tar.gz?download=1 -O "SMP-random.tar.gz"
+    tar -xzf "SMP-random.tar.gz"
+fi
