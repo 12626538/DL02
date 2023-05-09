@@ -1,3 +1,0 @@
-[submodule "gvp-pytorch"]
-	path = gvp-pytorch
-	url = git@github.com:drorlab/gvp-pytorch.git
