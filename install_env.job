@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#SBATCH --gres=gpu:0
+#SBATCH --partition=normal
 #SBATCH --job-name=InstallEnvironment
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
 #SBATCH --time=04:00:00
 #SBATCH --mem=32000M
-#SBATCH --output=job_logs/slurm_output_%A.out
+#SBATCH --output=job_logs/slurm_output_InstallEnv_%A.out
 
 #WARNING
 # This file might not work correctly.
@@ -14,24 +14,26 @@
 # but I did this manually, and running this script
 # did not work very time
 
-
 module purge
-module load 2021
-module load Anaconda3/2021.05
+module load 2022
+module load Anaconda3/2022.05
 
-echo "Creating ENV"
-conda create --name gedl python=3.6.13
-
-echo "Activating ENV"
-source activate gedl
+conda create --name gvp
+source activate gvp
 
 conda install pip
 
-echo "Installing torch dependencies using PIP"
-pip install torch==1.8.1
-pip install torch_sparse torch_geometric==1.7.0 torch_scatter==2.0.6 torch_cluster==1.5.9 atom3d==0.2.1
+pip install torch
+pip install torch_geometric
+pip install atom3d
+pip install tensorboard
 
-echo "Installing GVP"
-cd $HOME/DL02/gvp-pytorch/
+pip install torch_cluster -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_cluster-1.6.1%2Bpt20cu117-cp311-cp311-linux_x86_64.whlpip install torch_scatter -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_scatter-2.1.1%2Bpt20cu117-cp310-cp310-linux_x86_64.whl
+pip install torch_scatter -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_scatter-2.1.1%2Bpt20cu117-cp310-cp310-linux_x86_64.whl
+pip install torch_sparse -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_sparse-0.6.17%2Bpt20cu117-cp310-cp310-linux_x86_64.whl
+
+mkdir $HOME/DL02/
+cd $HOME/DL02/
+git clone https://github.com/drorlab/gvp-pytorch.git
+cd gvp-pytorch
 python setup.py develop
-
