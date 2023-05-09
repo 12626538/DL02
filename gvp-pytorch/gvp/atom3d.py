@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import pandas as pd
 import numpy as np
 from atom3d.datasets import LMDBDataset
-import atom3d.datasets.ppi.neighbors as nb
+from . import neighbors as nb
 from torch.utils.data import IterableDataset
 from . import GVP, GVPConvLayer, LayerNorm
 import torch_cluster, torch_geometric, torch_scatter
