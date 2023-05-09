@@ -69,13 +69,13 @@ fi
 # RES
 if [ ! -d $DATA_DIR/RES/ ]
 then
-    mkdir -p $DATA_DIR/RES/raw/
-    cd $DATA_DIR/RES/raw/
+    mkdir -p $DATA_DIR/RES/
+    cd $DATA_DIR/RES/
     wget -nv https://zenodo.org/record/5026743/files/RES-raw.tar.gz?download=1 -O "RES-raw.tar.gz"
     tar -xzf "RES-raw.tar.gz"
 
-    mkdir -p $DATA_DIR/RES/splits/
-    cd $DATA_DIR/RES/splits/
+    mkdir -p $DATA_DIR/RES/splits/split-by-cath-topology/
+    cd $DATA_DIR/RES/splits/split-by-cath-topology/
     wget -nv https://zenodo.org/record/5026743/files/RES-split-by-cath-topology-indices.tar.gz?download=1 -O "RES-split-by-cath-topology-indices.tar.gz"
     tar -xzf "RES-split-by-cath-topology-indices.tar.gz"
 fi

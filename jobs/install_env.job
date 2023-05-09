@@ -8,35 +8,38 @@
 #SBATCH --mem=32000M
 #SBATCH --output=job_logs/slurm_output_InstallEnv_%A.out
 
-#WARNING
-# This file might not work correctly.
-# these are the commands I executed to make it work
-# but I did this manually, and running this script
-# did not work very time
-
+# Set up conda
 module purge
 module load 2022
 module load Anaconda3/2022.05
 
+# Create enviornment 'gvp'
 conda create --name gvp
 source activate gvp
 
+# Need pip to install torch modules
 conda install pip
 
+# These can be installed by default
 pip install torch
 pip install torch_geometric
 pip install atom3d
 pip install tensorboard
 
+# Need Torch-specific wheels,
+# Assumes torch 2.0.0 and cuda 11.7, if yours is different, consult https://data.pyg.org
 pip install torch_cluster -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_cluster-1.6.1%2Bpt20cu117-cp311-cp311-linux_x86_64.whl
 pip install torch_scatter -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_scatter-2.1.1%2Bpt20cu117-cp310-cp310-linux_x86_64.whl
 pip install torch_sparse -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_sparse-0.6.17%2Bpt20cu117-cp310-cp310-linux_x86_64.whl
 
+# Copy GVP directory
 if [ ! -d $HOME/DL02/gvp-pytorch/ ]
 then
     mkdir -p $HOME/DL02/
     cd $HOME/DL02/
     git clone https://github.com/drorlab/gvp-pytorch.git
-    cd gvp-pytorch
-    python setup.py develop
 fi
+
+# Install GVP
+cd $HOME/DL02/gvp-pytorch/
+python setup.py develop
