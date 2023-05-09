@@ -68,13 +68,15 @@ from torch.utils.tensorboard import SummaryWriter
 if args.monitor:
     writer = SummaryWriter()
 
-print("Hyperparams:")
-print(args)
+if args.test == None:
+    print("Hyperparams:")
+    print(args)
 
 print = partial(print, flush=True)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-print("Device:",device)
+if args.test == None:
+    print("Device:",device)
 model_id = float(time.time())
 
 def main():
