@@ -166,6 +166,7 @@ def loop(dataset, model, optimizer=None, max_time=None):
     else:
         t = tqdm.tqdm(dataset)
     total_loss, total_count = 0, 0
+    i=0
 
     for batch in t:
         if max_time and (time.time() - start) > 60*max_time: break
@@ -175,8 +176,10 @@ def loop(dataset, model, optimizer=None, max_time=None):
         except RuntimeError as e:
             if "CUDA out of memory" not in str(e): raise(e)
             torch.cuda.empty_cache()
-            print('Skipped batch due to OOM', flush=True)
+            print(f'Skipped batch due to OOM at batch {i}', flush=True)
             continue
+
+        i+=1
 
         label = get_label(batch, args.task, args.smp_idx)
         loss_value = loss_fn(out, label)
