@@ -28,7 +28,7 @@ pip install torch_geometric
 pip install atom3d
 pip install tensorboard
 
-pip install torch_cluster -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_cluster-1.6.1%2Bpt20cu117-cp311-cp311-linux_x86_64.whlpip install torch_scatter -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_scatter-2.1.1%2Bpt20cu117-cp310-cp310-linux_x86_64.whl
+pip install torch_cluster -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_cluster-1.6.1%2Bpt20cu117-cp311-cp311-linux_x86_64.whl
 pip install torch_scatter -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_scatter-2.1.1%2Bpt20cu117-cp310-cp310-linux_x86_64.whl
 pip install torch_sparse -f https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_sparse-0.6.17%2Bpt20cu117-cp310-cp310-linux_x86_64.whl
 
