@@ -15,7 +15,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('task', metavar='TASK', choices=[
-        'SMP',# Others are disabled as of now 'PSR', 'RSR', 'PPI', 'RES', 'MSP', 'SMP', 'LBA', 'LEP'
+        'SMP', 'PSR', 'RSR', 'MSP', 'SMP', 'LBA', 'LEP', #'PPI', 'RES'
     ], help="{PSR, RSR, PPI, RES, MSP, SMP, LBA, LEP}")
 parser.add_argument('--num-workers', metavar='N', type=int, default=4,
                    help='number of threads for loading data, default=4')
@@ -44,6 +44,8 @@ parser.add_argument('--data', metavar='DIR', default='atom3d-data/',
                     help='directory to data')
 parser.add_argument('--monitor', action='store_true',
                     help='trigger tensorboard monitoring')
+parser.add_argument('--no-pbar', action='store_true',
+                    help='when set, do not show TQDM bars')
 
 args = parser.parse_args()
 
@@ -66,9 +68,13 @@ from torch.utils.tensorboard import SummaryWriter
 if args.monitor:
     writer = SummaryWriter()
 
+print("Hyperparams:")
+print(args)
+
 print = partial(print, flush=True)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print("Device:",device)
 model_id = float(time.time())
 
 def main():
@@ -93,7 +99,13 @@ def main():
 def test(model, testset):
     model.load_state_dict(torch.load(args.test))
     model.eval()
-    t = tqdm.tqdm(testset)
+
+    if args.no_pbar:
+        t = testset
+        print(f"[{time.strftime('%T')}] TESTING...")
+    else:
+        t = tqdm.tqdm(testset)
+
     metrics = get_metrics(args.task)
     targets, predicts, ids = [], [], []
     with torch.no_grad():
@@ -147,7 +159,12 @@ def loop(dataset, model, optimizer=None, max_time=None):
     start = time.time()
 
     loss_fn = get_loss(args.task)
-    t = tqdm.tqdm(dataset)
+
+    if args.no_pbar:
+        t = dataset
+        print(f"[{time.strftime('%T')}] LOOP...")
+    else:
+        t = tqdm.tqdm(dataset)
     total_loss, total_count = 0, 0
 
     for batch in t:
@@ -176,7 +193,8 @@ def loop(dataset, model, optimizer=None, max_time=None):
                 print('Skipped batch due to OOM', flush=True)
                 continue
 
-        t.set_description(f"{total_loss/total_count:.8f}")
+        if not args.no_pbar:
+            t.set_description(f"{total_loss/total_count:.8f}")
 
     return total_loss / total_count
 
