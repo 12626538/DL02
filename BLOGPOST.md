@@ -46,6 +46,35 @@ To address this issue, they propose vector gating as a way to propagate informat
 The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance whilst using a model is not very computationally demanding. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, they introduced the vector-gating to retain the rotational equivariance of the vector features, but this version of the GVP can only exchange information from scalar vectors to type-1 vectors and vice versa, using the norm. <!-- This last sentence is what Cong said, but I still don't really understand it. -->
 This triggered us to figure out an approach to take away the weak point while maintaining the strength. 
 
+
+### Testing Equivariance
+In order to test if the model is really equivariant to rotations, they check if the models behaves the same when the conditions are rotated. We can summarize this behaviour in into two points, namely:
+
+<!-- - n_v = nodes[1] -> vector features of the nodes
+- e_v = edges[1] -> vector features of the edges -->
+
+1. We want the output scalar features to be the same if the vector features of the input nodes and edges are rotated;
+2. If the output vector features of the original node and edges input are rotated, they need to be close to the output vector features from the rotated input vector features.
+
+This is done with the following function:
+
+```py
+def test_equivariance(model, nodes, edges):
+    
+    random = torch.as_tensor(Rotation.random().as_matrix(), 
+                             dtype=torch.float32, device=device)
+    
+    with torch.no_grad():
+    
+        out_s, out_v = model(nodes, edges)
+        n_v_rot, e_v_rot = nodes[1] @ random, edges[1] @ random
+        out_v_rot = out_v @ random
+        out_s_prime, out_v_prime = model((nodes[0], n_v_rot), (edges[0], e_v_rot))
+        
+        assert torch.allclose(out_s, out_s_prime, atol=1e-5, rtol=1e-4)
+        assert torch.allclose(out_v_rot, out_v_prime, atol=1e-5, rtol=1e-4)
+```
+
 ## Our Contribution
 <!-- Describe your novel contribution. -->
 
