@@ -59,17 +59,17 @@ This is done with the following function:
 
 ```py
 def test_equivariance(model, nodes, edges):
-    
-    random = torch.as_tensor(Rotation.random().as_matrix(), 
+
+    random = torch.as_tensor(Rotation.random().as_matrix(),
                              dtype=torch.float32, device=device)
-    
+
     with torch.no_grad():
-    
+
         out_s, out_v = model(nodes, edges)
         n_v_rot, e_v_rot = nodes[1] @ random, edges[1] @ random
         out_v_rot = out_v @ random
         out_s_prime, out_v_prime = model((nodes[0], n_v_rot), (edges[0], e_v_rot))
-        
+
         assert torch.allclose(out_s, out_s_prime, atol=1e-5, rtol=1e-4)
         assert torch.allclose(out_v_rot, out_v_prime, atol=1e-5, rtol=1e-4)
 ```
@@ -79,6 +79,43 @@ def test_equivariance(model, nodes, edges):
 We aim to improve performance of the GVP layers by no longer requiring the scalar features to be independent of the orientation of the geometric features. In the GVP layers, by taking the norm of these features, important information of the orientation is lost. For the Atom3D tasks, a model is used that only takes the output scalar features of all nodes, and therefore does not take orientation into account explicitely. This limits the expressiveness of the model.
 
 Our hypothesis is that by using a steerable basis, the scalar features used as output of the model will be more expressive of the geometry of the data. These steerable basis will allow for better communication between the scalar and geometric features which includes orientation, rather than just the norm.
+
+### Tasks
+The authors of the original paper use eight tasks to test the quality of their model. These tasks are **LBA, SMP, MSP, PSR & RSR**. These tasks mean the following:
+#### LBA
+*Ligand Binding Affinity* task is a regression task that gets as input structure a
+Protein-ligand complex, this is a binding between a protein bound and a ligand (A ligand is a molecule or ion that binds to a central metal atom or ion in a complex, or a small molecule that binds to a larger biomolecule to modify its activity, stability or localization.). From this input structure the goal is to predict the negative log affinity. The negative log is for optimisation and the affinity is the rate at which the molecules bind with each other. We did this with different training/validation splits
+
+#### SMP
+*Small Molecule Properties* is a regression task to predict the physiochemical property of a small molecule that are given as input structure. Examples of these properties are melting point, boiling point, density, viscosity, Hydrophobicity/Hydrophilicity.
+
+#### MSP
+*Mutation Stability Prediction* is a classification task that takes as input structure a
+protein complex and the same protein with a mutation. The aim of the task is to predict whether or not the mutation is stable or not.
+####  PSR
+*Protein Structure Ranking* is a regression task that gets a protein as input structure and aims to predict the Global distance test total score (GST_TS). This score is a mesure that measures the two protein structures.
+
+#### RSR
+*RNA Structure Ranking* is a regression task that gets RNA as input structure and aims to predict the root mean squared deviation (RMSD).
+
+### Reproduction
+Since the code of the paper was given to us, it was relatively easy to reproduce the results of the original paper. We reproduced all the tasks that our cluster could handle. Once we had all the results, we could build upon a task that was correctly reproduced. We only want to use tasks that are very close to the original papers since then the task can give a clear and correct indication if our contribution improves the model.
+
+Our resulst were as follows:
+| Task                    | Our    | Their |
+|-------------------------|--------|-------|
+| LBA (Split 30)          | **1.577**  | **1.594** |
+| LBA (Split 60)          | **1.596**  | **1.594** |
+| SMP $\mu[D]$            | 0.144  | 0.049 |
+| SMP $\sigma_{gap} [eV]$ | 0.0058 | 0.065 |
+| SMP $U^{at}_0 [eV]$     | 0.0259 | 0.143 |
+| MSP                     | **0.672**  | **0.680** |
+| PSR (global)            | 0.854  | 0.845 |
+| PSR (mean)              | 0.602  | 0.511 |
+| RSR (global)            | **0.331**  | **0.330** |
+| RSR (mean)              | 0.018  | 0.221 |
+
+From these results we conclude that the LBA task is close enough to the original paper that our reproduction is succesfull. Also MSP is close enough to use this task for the adaption. The reproduction RSR task is globally also very close, however the mean has a big deviation, that we do not aim to use this task for further research. The other tasks were not good enough for us to use futher.
 
 <!-- - changing perhaps change the k in knn for these graph convolution (message passing layers) -->
 
