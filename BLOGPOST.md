@@ -9,9 +9,9 @@ However, proteins are complex biomolecules with a unique three-dimensional struc
 
 $$f(g\cdot x) = g\cdot f(x)$$
 
-In order to keep more geometric information, Jing, Eismann, Suriana, Townshend, and Dror (2020) propose a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. Instead of encoding 3D geometry of proteins, i.e. vector features, in terms of rotation-invariant scalars, they propose that vector features be directly represented as geometric vectors in 3D space at all steps of graph propagation. They claim that this approach would improve the GNN's ability to reason geometrically and capture the spatial relationships between atoms and residues in a protein structure. 
+In order to keep more geometric information, Jing, Eismann, Suriana, Townshend, and Dror (2020) propose a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. Instead of encoding 3D geometry of proteins, i.e. vector features, in terms of rotation-invariant scalars, they propose that vector features be directly represented as geometric vectors in 3D space at all steps of graph propagation. They claim that this approach would improve the GNN's ability to reason geometrically and capture the spatial relationships between atoms and residues in a protein structure.
 
-This modification to the standard GNN consists of changing the multilayer perceptrons (MLPs) with geometric vector perceptrons (GVPs). The GVP approach described in the paper is used to learn the relationship between protein sequences and their structures. GVPs are a type of layer that operates on geometric objects, such as vectors and matrices, rather than on scalar values like most neural networks. This makes GVPs well-suited to tasks that involve analyzing spatial relationships, which is highly important for protein structures. 
+This modification to the standard GNN consists of changing the multilayer perceptrons (MLPs) with geometric vector perceptrons (GVPs). The GVP approach described in the paper is used to learn the relationship between protein sequences and their structures. GVPs are a type of layer that operates on geometric objects, such as vectors and matrices, rather than on scalar values like most neural networks. This makes GVPs well-suited to tasks that involve analyzing spatial relationships, which is highly important for protein structures.
 
 In GVP-GNNs, node and edge embeddings are represented as tuples of scalar features and geometric vector features. The message and update functions are parameterized by geometric vector perceptrons, which are modules that map between the tuple representations while preserving rotational invariance. In a paper by Jing, Eismann, Soni, and Dror (2021) they extended the GVP-GNN architecture to handle atomic-level structure representations, which allows the architecture to be used for a wider range of tasks. <!-- why, idk rn -->
 
@@ -43,8 +43,7 @@ To address this issue, they propose vector gating as a way to propagate informat
 
 #END NOTES# -->
 
-The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance whilst using a model is not very computationally demanding. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, they introduced the vector-gating to retain the rotational equivariance of the vector features, but this version of the GVP can only exchange information from scalar vectors to type-1 vectors and vice versa, using the norm. <!-- This last sentence is what Cong said, but I still don't really understand it. -->
-This triggered us to figure out an approach to take away the weak point while maintaining the strength. 
+The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance whilst using a model is not very computationally demanding. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, they introduced the vector-gating to retain the rotational equivariance of the vector features, but this version of the GVP can only exchange information between scalar and geometric features using scalar values (either the norm or using gating). A point of improvement we are aiming for is to increase the expresiveness of this model by improving this sharing between scalar and geometric features to incorperate orientation into the scalar features.
 
 
 ### Testing Equivariance
@@ -77,16 +76,13 @@ def test_equivariance(model, nodes, edges):
 
 ## Our Contribution
 <!-- Describe your novel contribution. -->
+We aim to improve performance of the GVP layers by no longer requiring the scalar features to be independent of the orientation of the geometric features. In the GVP layers, by taking the norm of these features, important information of the orientation is lost. For the Atom3D tasks, a model is used that only takes the output scalar features of all nodes, and therefore does not take orientation into account explicitely. This limits the expressiveness of the model.
 
-<!-- based on Noa's hidden stuff :) -->
-We aim to achieve this the GVP (steerable) rotation equivariant instead of invariant whilst being able to work with any type-$k$ vectors. As a result, the model remains invariant for the orientation of the molecule, while it takes the orientation of the molecule into account for building the protein and thus the structure of the protein as a whole. The equivariance makes the model treat a protein with all molecules in a line and a protein with all molecules bundles in a small boll, be represented differently instead of similar like the original model. 
-
-- Explain about steerable graph convolutions :)
-- 
+Our hypothesis is that by using a steerable basis, the scalar features used as output of the model will be more expressive of the geometry of the data. These steerable basis will allow for better communication between the scalar and geometric features which includes orientation, rather than just the norm.
 
 <!-- - changing perhaps change the k in knn for these graph convolution (message passing layers) -->
 
-<!-- 
+<!--
 ChatGPT stuff on the explanation of steerable graph convolutions
 In a steerable graph convolution, the filters are defined in a way that they can be rotated to any direction in the graph, by using a steering matrix. The steering matrix is a set of complex-valued coefficients that are learned during training, and it encodes the rotation of the filters in the spectral domain of the graph Laplacian matrix.
 
