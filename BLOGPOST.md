@@ -45,6 +45,16 @@ To address this issue, they propose vector gating as a way to propagate informat
 
 The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance whilst using a model is not very computationally demanding. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, they introduced the vector-gating to retain the rotational equivariance of the vector features, but this version of the GVP can only exchange information between scalar and geometric features using scalar values (either the norm or using gating). A point of improvement we are aiming for is to increase the expresiveness of this model by improving this sharing between scalar and geometric features to incorperate orientation into the scalar features.
 
+To formalize this, take the transformation of the scalar features $\boldsymbol{s} \in \mathbb{R}^{s_{in}} \mapsto \boldsymbol{s}' \in \mathbb{R}^{s_{out}}$ in the GVP module such that
+$$
+\boldsymbol{s}'=\sigma\left( \boldsymbol{W}_m \begin{bmatrix} ||\boldsymbol{W}_h \boldsymbol{V} ||_2 \\ \boldsymbol{s} \end{bmatrix} + \boldsymbol{b} \right)
+$$
+where $\boldsymbol{W}$ is the weight matrix of the linear layers, $\boldsymbol{b}$ is a bias vector, $\sigma$ is some element-wise activation function, $\boldsymbol{V} \in \mathbb{R}^{n \times 3}$ are the geometric features and their norm $||\cdot ||_2$ is taken row-wise. $\boldsymbol{s}'$ is invariant under rotations if, for some unitary $3\times3$ matrix $\boldsymbol{U}$, the rotated geometric features $\boldsymbol{V} \boldsymbol{U}$ give the same $\boldsymbol{s'}$ as defined above. This holds, since
+$$ ||\boldsymbol{W}_h \boldsymbol{V} ||_2 = ||\boldsymbol{W}_h \boldsymbol{V} \boldsymbol{U} ||_2$$
+however, if the rows of $\boldsymbol{V}$ are rotated *individually* using unitary matrices $\boldsymbol{U}_1, \ldots, \boldsymbol{U}_n$, resulting in some $\boldsymbol{V}'$, they will act on $\boldsymbol{s}$ identically, since their norms are taken row-wise
+$$
+||\boldsymbol{W}_h \boldsymbol{V}' ||_2 = \begin{bmatrix} ||\boldsymbol{W}_h \boldsymbol{v}_1^T \boldsymbol{U}_1 ||_2 \\ \vdots \\ ||\boldsymbol{W}_h \boldsymbol{v}_n^T \boldsymbol{U}_n ||_2 \end{bmatrix} = \begin{bmatrix}||\boldsymbol{W}_h \boldsymbol{v}_1^T ||_2 \\ \vdots \\ ||\boldsymbol{W}_h \boldsymbol{v}_n^T ||_2 \end{bmatrix} = ||\boldsymbol{W}_h \boldsymbol{V} ||_2
+$$
 
 ### Testing Equivariance
 In order to test if the model is really equivariant to rotations, they check if the models behaves the same when the conditions are rotated. We can summarize this behaviour in into two points, namely:
@@ -102,18 +112,18 @@ protein complex and the same protein with a mutation. The aim of the task is to 
 Since the code of the paper was given to us, it was relatively easy to reproduce the results of the original paper. We reproduced all the tasks that our cluster could handle. Once we had all the results, we could build upon a task that was correctly reproduced. We only want to use tasks that are very close to the original papers since then the task can give a clear and correct indication if our contribution improves the model.
 
 Our resulst were as follows:
-| Task                    | Our    | Their |
-|-------------------------|--------|-------|
-| LBA (Split 30)          | **1.577**  | **1.594** |
-| LBA (Split 60)          | **1.596**  | **1.594** |
-| SMP $\mu[D]$            | 0.144  | 0.049 |
-| SMP $\sigma_{gap} [eV]$ | 0.0058 | 0.065 |
-| SMP $U^{at}_0 [eV]$     | 0.0259 | 0.143 |
-| MSP                     | **0.672**  | **0.680** |
-| PSR (global)            | 0.854  | 0.845 |
-| PSR (mean)              | 0.602  | 0.511 |
-| RSR (global)            | **0.331**  | **0.330** |
-| RSR (mean)              | 0.018  | 0.221 |
+| Task                    | Metric        | Our    | Their |
+|-------------------------|---------------|--------|-------|
+| LBA (Split 30)          | RMSE          | **1.577**  | **1.594** |
+| LBA (Split 60)          | RMSE          | **1.596**  | **1.594** |
+| SMP $\mu[D]$            | MAE           | 0.144  | 0.049 |
+| SMP $\sigma_{gap} [eV]$ | MAE           | 0.0058 | 0.065 |
+| SMP $U^{at}_0 [eV]$     | MAE           | 0.0259 | 0.143 |
+| MSP                     | AUROC         | **0.672**  | **0.680** |
+| PSR                     | global $R_s$  | 0.854  | 0.845 |
+| PSR                     | mean $R_s$    | 0.602  | 0.511 |
+| RSR                     | global $R_s$  | **0.331**  | **0.330** |
+| RSR                     | mean $R_s$    | 0.018  | 0.221 |
 
 From these results we conclude that the LBA task is close enough to the original paper that our reproduction is succesfull. Also MSP is close enough to use this task for the adaption. The reproduction RSR task is globally also very close, however the mean has a big deviation, that we do not aim to use this task for further research. The other tasks were not good enough for us to use futher.
 
