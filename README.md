@@ -1,55 +1,76 @@
-# DL02
-Repository for the DL02 course, apr 2023, Universiteit van Amsterdam
+## Project Description
+[Jing et al., (2020)](https://arxiv.org/abs/2009.01411) proposed a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. This involves changing the multilayer perceptrons (MLPs) with geometric vector perceptrons (GVPs). The GVP approach is used to learn the relationship between protein sequences and their structures, operating on geometric objects rather than scalar values. In a follow-up paper by [Jing et al, (2021)](https://arxiv.org/abs/2106.03843), the authors extended the GVP-GNN architecture to handle atomic-level structure representations with vector gating, replacing the vector non-linearity. This retains the rotational equivariance of the vector features, but this version of the GVP can only exchange information from scalar vectors to type-1 vectors and vice versa, using the norm. This triggered us to figure out an approach to take away the weak point while maintaining the strength. 
 
-# Set up environment
-First create virtual environment with the correct python version. We name the env `gvp` here.
-Then install all the packages needed for the GVP.
-Clone the github repo with all the GVP files.
-Go in to folder.
-Might need the flag `SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True` in order to install the files.
+## Setting up the environment
+First create virtual environment with the correct python version. We name the env `gvp` here. Then install all the packages needed for the GVP.
+Might need to change the building wheel in order to install the files. For this navigate to https://data.pyg.org/whl/ and find the correct link.
 ```bash
-conda create -n gvp python==3.6.13
+conda create -n gvp python==3.11.3 pip
+conda activate gvp
+pip install torch==2.0.0 # required install before the packages
 pip install -r requirements.txt
-git clone https://github.com/drorlab/gvp-pytorch.git
-cd gvp-pytorch
-SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True pip install .
 ```
 
-# Schedule [OUTDATED]
+## Downloading the data
+The datasets for each task are found by navigating to <https://www.atom3d.ai/> and selecting the task. The zip-files have to be structured within the data folder as follows, except for the `RES`-task, which has an additional 'raw' data file:
+```
+.
+├── atom3d-data
+|    ├── <TASK>
+|    |   └── splits
+|    |       └── <extracted zip-file(s)>
+|    └── RES
+|        ├── raw
+|        └── splits
+|            └── split-by-cath-topology
+└── models
+```
+The files within the split folder for the tasks are as follows:
+```
+* LBA: split-by-sequence-identity-30
+* LBA: split-by-sequence-identity-60
+* LEP: split-by-protein 
+* MSP: split-by-sequence-identity-30
+* PPI: DIPS-split
+* PSR: split-by-year
+* RES: split-by-cath-topology
+* RSR: candidates-by-split-by-time
+* SMP: random
+```
+Note an additional empty folder 'models' is created in the same directory to allow for saving the model checkpoints during training.
 
-Below you can find the schedule, grouped per module
+## Training the models
+The models can be trained by specifying the task and additional arguments as follows:
+```
+python run_atom3d.py <TASK> <Additional arguments>
+```
+These additional arguments can be task-specific for the following tasks:
+```
+* LBA: --lba-split  [30, 60]
+* SMP: --smp-idx    [0 .. 19]
+```
+This also allows for setting hyperparameters as noted by the [original authors](https://github.com/drorlab/gvp-pytorch#training--testing-1)
 
-## [1pt] Module 7 - Self-supervised and Vision-Language Learning
+With the now added option to monitor the data with `--monitor` which creates the files needed to track the training and validation loss with tensorboard.
 
-- Lecture, apr 13 9-11, SP G0.05
-- Lecutre, apr 25 9-11, G0.10-G0.12
+## Reproducing the original results
+To reproduce the original tasks the code was run with default paramaters where the only change occured in increasing or decreasing batch-size. For the `SMP` task only the indexes 3, 7, and 15 where required. The results are then aquired by running the following for each task.
 
-## [2pt] Module 1 - Group Equivarent Deep Learning
+```
+python run_atom3d.py -test model/<checkpoint> <Additional arguments>
+```
 
-- Lecture, apr 11 9-11, G0.05
-- Seminar, apr 13 13-15, G0.05
-- Lecture, apr 18 9-11, G0.05
-- Seminar, apr 20 13-15, G0.05
-- Lecture, apr 25 9-11, G0.05
-- Seminar, apr 25 11-13, G0.05
-- Lecture, may 09 9-11, G0.05
-- Office Hour, may 9 11-13, G0.05
-- Office Hour, may 16 11-13, G0.05
-- Office Hour, may 23 11-13, G0.05
-
-## [3pt] Module 5 - Diffusion and Advanced Generative Models
-
-- Lecture, apr 13 9-11, G0.23-G0.25
-- Lecture, apr 20 9-11, G0.05
-- Lecture, apr 25 9-11, G3.02
-- Lecture, may 09 9-11, G3.02
-- Lecture, may 11 9-11, G3.02
+This returns the task-specific result metrics, which will be reported and discussed in the following [notebook](https://github.com/12626538/DL02/blob/main/steerable_graph_protein.ipynb) or [blogpost](https://github.com/12626538/DL02/blob/main/BLOGPOST.md)
 
 
-# Usage on LISA
+## Deep Learning 2
+This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam
 
-**TODO**[This is still work in progress] First make sure to create an enviornment with the requirements in the GVP repo. [This file](./install_env.job) should do the job, but has not been shown to work....
-
-Download the dataset files in some directory. If you are planning to use [`run_atom3d.py`](./gvp-pytorch/run_atom3d.py), keep the file structure found [here](https://github.com/drorlab/gvp-pytorch/blob/82af6b22eaf8311c15733117b0071408d24ed877/run_atom3d.py#L207). The `--data` argument in `run_atom3d.py` replaces the `atom3d-data`, so you can specify what directory you use.
-
-Take a look at a job file like [this one](./run_atom3d.job) to try to understand what needs to happen to run LISA.
+As of may 14 2023 the project plan has been completed as follows:
+- [x] Study the paper and the original code
+- [x] Create set up for reproduction and expansion of the original paper
+- [x] Recreate the original papers results
+- [ ] Report on the reproduced results
+- [ ] Implement our proposed expansion 
+- [ ] Report on the results with expansion
+- [ ] Finish final deliverables and present on June 1st 2023
