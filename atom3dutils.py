@@ -9,6 +9,14 @@ from collections import defaultdict
 import sklearn.metrics as sk_metrics
 from atom3d.util import metrics
 
+# Supresses the following warning:
+#   UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class.
+#   This should only matter to you if you are using storages directly.
+#   To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+# Source yet undetermined
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+
 _NUM_ATOM_TYPES = 9
 _element_mapping = lambda x: {
     'H' : 0,
