@@ -39,7 +39,7 @@ parser.add_argument('--depth', metavar='DEPTH', type=int, default=3,
 args = parser.parse_args()
 
 # For logging during the training process
-import time 
+import time
 from lightning.pytorch.loggers import TensorBoardLogger
 from lightning.pytorch.callbacks import ModelCheckpoint
 
@@ -67,18 +67,18 @@ metrics:dict[str,callable]=get_metrics(args.task)
 print("Test metrics:", list(metrics.keys()))
 
 datasets:dict[str,any] = get_datasets(
-    task=args.task, 
+    task=args.task,
     smp_idx=args.smp_idx,
     lba_split=args.lba_split,
     data_dir=args.data)
 
 dataloaders:dict[str,tg.loader.DataLoader] = {
-    "train": tg.loader.DataLoader(datasets['train'], batch_size=args.batch_size, num_workers=args.num_workers, shuffle=True),
-    "valid": tg.loader.DataLoader(datasets['valid'], batch_size=args.batch_size, num_workers=args.num_workers),
-    "test":  tg.loader.DataLoader(datasets['test'],  batch_size=args.batch_size, num_workers=args.num_workers),
+    "train": tg.loader.DataLoader(datasets['train'], batch_size=args.batch, num_workers=args.num_workers, shuffle=True),
+    "valid": tg.loader.DataLoader(datasets['valid'], batch_size=args.batch, num_workers=args.num_workers),
+    "test":  tg.loader.DataLoader(datasets['test'],  batch_size=args.batch, num_workers=args.num_workers),
 }
 
-# Setting up the logger 
+# Setting up the logger
 # NOTE: perhaps adjust? because using tensorboard directly seems like less lines of code
 _name = str(args.task)
 if args.task == 'SMP': # kan dit niet gwn if '_name ==' zijn?
@@ -87,25 +87,25 @@ elif args.task == 'LBA':
     _name+=f'-lba_split={args.lba_split}'
 
 _version = f"{time.strftime('%Y%b%d-%T')}"
-    
+
 logger = TensorBoardLogger(
-    save_dir=args.logdir, 
+    save_dir=args.logdir,
     name=_name,
-    version=_version, 
+    version=_version,
 )
 
 checkpoint_callback = ModelCheckpoint(
-    dirpath=args.modeldir, 
-    save_top_k=2, 
-    monitor="val_loss",
+    dirpath=args.modeldir,
+    save_top_k=2,
+    monitor="val/loss_epoch",
     mode='min',
     save_on_train_epoch_end=True,
-    filename=_name+"-{epoch:02d}-{val_loss:.2e}",
+    filename=_name+"-"+_version+"-{epoch:02d}-{val/loss_epoch:.2e}",
     save_last=True,
 )
 
 plmodule = Atom3D(
-    model=model, 
+    model=model,
     metrics=metrics,
     lr=args.lr,
 )
@@ -118,7 +118,7 @@ trainer = lp.Trainer(
     callbacks=[checkpoint_callback,],
 )
 
-# if no checkpoint given we train the model 
+# if no checkpoint given we train the model
 if not args.test:
     trainer.fit(plmodule, dataloaders["train"], dataloaders["valid"])
     print("Best model:", checkpoint_callback.best_model_path)

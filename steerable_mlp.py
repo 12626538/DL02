@@ -9,7 +9,7 @@ from e3nn import o3  # needed for convolution class
 from e3nn.nn import Gate  # needed for ConvLayer SE3 class
 from e3nn.o3 import Irreps  # needed for balanced irreps function
 
-import atom3dutils 
+import atom3dutils
 
 
 def balanced_irreps(hidden_features, lmax):
@@ -106,7 +106,6 @@ class ConvLayerSE3(tg.nn.MessagePassing):
         return x
 
     def message(self, x_i, x_j, rel_pos_sh, dist):
-        print(type(x_i))
         return self.conv(x_j, rel_pos_sh, dist)
 
 # Collect the above defined classes in the complete model
@@ -155,7 +154,7 @@ class ConvModel(nn.Module):
         x = x.squeeze(-1)
 
         # TODO: add dense layers
-        
+
         # Global pooling of node features
         x = tg.nn.global_mean_pool(x, batch)
         return x
@@ -172,7 +171,7 @@ class Atom3D(lp.LightningModule):
         *args,
         **kwargs
     ):
-        
+
         super().__init__(*args, **kwargs)
         self.model = model
         self.lr = lr
@@ -186,17 +185,17 @@ class Atom3D(lp.LightningModule):
     def training_step(self, batch:tg_batch, batch_idx:int):
         out = self(batch)
         loss = self.loss_fn(out, batch.label)
-                
+
         self.log("train/loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        
+
         return loss
 
     def validation_step(self, batch:tg_batch, batch_idx:int):
         out = self(batch)
         loss = self.loss_fn(out, batch.label)
-        
+
         self.log("val/loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        
+
         return loss
 
     def test_step(self, batch:tg_batch, batch_idx:int):
@@ -209,12 +208,12 @@ class Atom3D(lp.LightningModule):
         for key, func in self.metrics.items():
             results[f'test/{key}'] = func(out, label)
         self.log_dict(results, on_epoch=True, logger=True)
-        
+
         return self.loss_fn(out, label)
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
-        
+
         return {
             'optimizer': optimizer
         }
