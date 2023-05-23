@@ -23,8 +23,6 @@ parser.add_argument('--modeldir', metavar='DIR', default='models/',
                     help='directory to save models to')
 parser.add_argument('--data', metavar='DIR', default='atom3d-data/',
                     help='directory to data')
-parser.add_argument('--monitor', action='store_true',
-                    help='trigger tensorboard monitoring')
 
 # Added compared to run_atomd3d.py
 parser.add_argument('--logdir', metavar='DIR', default='runs/',
@@ -35,6 +33,8 @@ parser.add_argument('--l-max', metavar='LMAX', type=int, default=1,
                    help='...TODO, default=1')
 parser.add_argument('--depth', metavar='DEPTH', type=int, default=3,
                    help='number of layers ...TODO, default=3')
+parser.add_argument('--dense', action='store_true',
+                    help='trigger additional dense layers')
 
 args = parser.parse_args()
 
@@ -108,6 +108,7 @@ plmodule = Atom3D(
     model=model,
     metrics=metrics,
     lr=args.lr,
+    dense=args.dense
 )
 
 # Set-up trainer

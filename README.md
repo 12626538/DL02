@@ -77,24 +77,26 @@ These additional arguments can be task-specific for the following tasks:
 ```
 This also allows for setting the following properties of the model:
 ```
-* Maximum something: --l-max
+* Maximum something: --l-max -type 0 scalar - type 1 vector 
 * Number of features used by the model ?: --num-feat
 * Depth of the model: --depth
 ```
 Then ...
 
 ## Steerable MLP results
-Focused on the LBA (split 30 shown) task, report improvement in metrics - compare in table - arrows indicate whether higher or lower is considered 'beter' (or if they're all better when lower we can inidcate whether there was an improvement next to the result)
+Focused on the LBA (split 30 shown) task, report improvement in metrics (as reported in the original paper - leaving out the pearson and kendall) arrows indicate whether higher or lower is considered 'beter' (or if they're all better when lower we can inidcate whether there was an improvement next to the result)
 
-|               |  GVP (original paper) |  GVP (reproduced)  |   sMLP     |
-| ------------- | ------------- | ------------- | ------------- |
-| RMSE &#8595;  |1.594 +- 0.073 | 1.577 &#8595; | 1.277         |
-| Pearson       | ---           | 0.387         | 0.355         |
-| Spearman      | ---           | 0.372         | 0.355         |
-| Kendall       | ---           | 0.254         | 0.355         |
+|                       | RMSE &#8595;  |
+| -------------         | ------------- |
+| GVP (original paper)  | 1.594 &#177; 0.073   | 
+| GVP (reproduced)      | 1.577  &#177;        |
+| sMLP                  | 1.277 &#177;         |
+| sMLP (dense)          | ....   &#177;        |
 
 <!-- down &#8595; ->
 <!-- up &#8593; -->
+
+
 ## Deep Learning 2
 This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam
 
