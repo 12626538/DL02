@@ -89,13 +89,22 @@ Focused on the LBA (split 30 shown) task, report improvement in metrics (as repo
 |                       | RMSE &#8595;  |
 | -------------         | ------------- |
 | GVP (original paper)  | 1.594 &#177; 0.073   | 
-| GVP (reproduced)      | 1.577  &#177;        |
+| GVP (reproduced)      | xx  &#177;        |
 | sMLP                  | 1.277 &#177;         |
 | sMLP (dense)          | ....   &#177;        |
 
 <!-- down &#8595; ->
 <!-- up &#8593; -->
 
+<!-- GVP reproduction RSME different runs op LBA split=30
+    - run 1 : 1.577064037322998 
+    - run 2 : 1.616431474685669
+    - run 3 : 1.6020700931549072 -->
+
+<!-- GVP reproduction RSME different runs op LBA split=60
+    - run 1 : 1.5962501764297485 
+    - run 2 : 1.6832526922225952
+    - run 3 : 1.6436277627944946 -->
 
 ## Deep Learning 2
 This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam
