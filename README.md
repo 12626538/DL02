@@ -39,7 +39,7 @@ The files within the split folder for the tasks are as follows:
 ```
 Note an additional empty folder 'models' is created in the same directory to allow for saving the model checkpoints during training.
 
-## Training the models
+## Training the models with the GVP model
 The models can be trained by specifying the task and additional arguments as follows:
 ```
 python run_atom3d.py <TASK> <Additional arguments>
@@ -60,9 +60,41 @@ To reproduce the original tasks the code was run with default paramaters where t
 python run_atom3d.py -test model/<checkpoint> <Additional arguments>
 ```
 
-This returns the task-specific result metrics, which will be reported and discussed in the following [notebook](https://github.com/12626538/DL02/blob/main/steerable_graph_protein.ipynb) or [blogpost](https://github.com/12626538/DL02/blob/main/BLOGPOST.md)
+This returns the task-specific result metrics, which will be reported and discussed in the following  [blogpost](https://github.com/12626538/DL02/blob/main/BLOGPOST.md)
 
+## Extending with Steerable MLPs
+TODO explain a bit about the extension and how it differs (compact version of the text in the blogpost.md)
 
+## Training on ATOM3d with the extended models
+The training of the extended model is much like the GVP model. The following file can be used by specifying the task and additional arguments as follows:
+```
+python run_sMLP.py <TASK> <Additional arguments>
+```
+These additional arguments can be task-specific for the following tasks:
+```
+* LBA: --lba-split  [30, 60]
+* SMP: --smp-idx    [0 .. 19]
+```
+This also allows for setting the following properties of the model:
+```
+* Maximum something: --l-max
+* Number of features used by the model ?: --num-feat
+* Depth of the model: --depth
+```
+Then ...
+
+## Steerable MLP results
+Focused on the LBA (split 30 shown) task, report improvement in metrics - compare in table - arrows indicate whether higher or lower is considered 'beter' (or if they're all better when lower we can inidcate whether there was an improvement next to the result)
+
+|               |  GVP (original paper) |  GVP (reproduced)  |   sMLP     |
+| ------------- | ------------- | ------------- | ------------- |
+| RMSE &#8595;  |1.594 +- 0.073 | 1.577 &#8595; | 1.277         |
+| Pearson       | ---           | 0.387         | 0.355         |
+| Spearman      | ---           | 0.372         | 0.355         |
+| Kendall       | ---           | 0.254         | 0.355         |
+
+<!-- down &#8595; ->
+<!-- up &#8593; -->
 ## Deep Learning 2
 This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam
 
@@ -70,7 +102,7 @@ As of may 14 2023 the project plan has been completed as follows:
 - [x] Study the paper and the original code
 - [x] Create set up for reproduction and expansion of the original paper
 - [x] Recreate the original papers results
-- [ ] Report on the reproduced results
-- [ ] Implement our proposed expansion 
+- [x] Report on the reproduced results
+- [x] Implement our proposed expansion 
 - [ ] Report on the results with expansion
 - [ ] Finish final deliverables and present on June 1st 2023
