@@ -54,44 +54,41 @@ This also allows for setting hyperparameters as noted by the [original authors](
 With the now added option to monitor the data with `--monitor` which creates the files needed to track the training and validation loss with tensorboard.
 
 ## Reproducing the original results
-To reproduce the original tasks the code was run with default paramaters where the only change occured in increasing or decreasing batch-size. For the `SMP` task only the indexes 3, 7, and 15 where required. The results are then aquired by running the following for each task.
+To reproduce the original tasks the code was run with default paramaters where the only change occured in increasing or decreasing batch-size. For the `SMP` task only the indexes 3, 7, and 15 were required. The results are then aquired by running the following for each task.
 
 ```
-python run_atom3d.py -test model/<checkpoint> <Additional arguments>
+python run_atom3d.py --test model/<checkpoint> <Additional arguments>
 ```
 
-This returns the task-specific result metrics, which will be reported and discussed in the following  [blogpost](https://github.com/12626538/DL02/blob/main/BLOGPOST.md)
+This returns the task-specific result metrics, which will are reported and discussed in the following [blogpost](./BLOGPOST.md). These results can also be obtained from the model checkpoints with the help of the [demo-notebook](./demo.ipynb).
 
 ## Extending with Steerable MLPs
 TODO explain a bit about the extension and how it differs (compact version of the text in the blogpost.md)
 
 ## Training on ATOM3d with the extended models
-The training of the extended model is much like the GVP model. The following file can be used by specifying the task and additional arguments as follows:
+The training of the extended model is similar to the GVP model. The following file can be used by specifying the task and additional arguments as follows:
 ```
 python run_sMLP.py <TASK> <Additional arguments>
 ```
-These additional arguments can be task-specific for the following tasks:
+These additional arguments again include the task-specifics arguments for `LBA` and `SMP`. It also allows for setting the following properties of the model:
 ```
-* LBA: --lba-split  [30, 60]
-* SMP: --smp-idx    [0 .. 19]
-```
-This also allows for setting the following properties of the model:
-```
-* Maximum something: --l-max -type 0 scalar - type 1 vector 
-* Number of features used by the model ?: --num-feat
-* Depth of the model: --depth
+* --l-max       >1
+* --embed-dim   
+* --hidden-dim 
+* --depth
 ```
 Then ...
 
 ## Steerable MLP results
-Focused on the LBA (split 30 shown) task, report improvement in metrics (as reported in the original paper - leaving out the pearson and kendall) arrows indicate whether higher or lower is considered 'beter' (or if they're all better when lower we can inidcate whether there was an improvement next to the result)
+Below we show short summary of the results obtained by the steerable MLP model, focused on the LBA (split 30 shown) task. 
+<!--  report improvement in metrics (as reported in the original paper) arrows indicate whether higher or lower is considered 'beter' (or if they're all better when lower we can inidcate whether there was an improvement next to the result) -->
 
 |                       | RMSE &#8595;  |
 | -------------         | ------------- |
-| GVP (original paper)  | 1.594 &#177; 0.073   | 
-| GVP (reproduced)      | xx  &#177;        |
-| sMLP                  | 1.277 &#177;         |
-| sMLP (dense)          | ....   &#177;        |
+| GVP (original paper)  | 1.594 &#177; 0.073    | 
+| GVP (reproduced)      | 1.598  &#177; 0.020   |
+| sMLP                  | xx &#177;             |
+| sMLP (dense)          | ....   &#177;         |
 
 <!-- down &#8595; ->
 <!-- up &#8593; -->
