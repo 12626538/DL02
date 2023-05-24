@@ -27,12 +27,14 @@ parser.add_argument('--data', metavar='DIR', default='atom3d-data/',
 # Added compared to run_atomd3d.py
 parser.add_argument('--logdir', metavar='DIR', default='runs/',
                     help='directory to save models to')
-parser.add_argument('--num-feat', metavar='NUM', type=int, default=32,
-                   help='number of feature ...TODO, default=32')
+parser.add_argument('--embed-dim', metavar='NUM', type=int, default=32,
+                   help='Embedding size, default=32')
+parser.add_argument('--hidden-dim', metavar='NUM', type=int, default=128,
+                   help='Dimensionality of hidden irreps, will be balanced across type-l<=lmax irreps using `balanced_irreps`, default=128')
 parser.add_argument('--l-max', metavar='LMAX', type=int, default=1,
-                   help='...TODO, default=1')
+                   help='Hidden representations will be of max this type, default=1')
 parser.add_argument('--depth', metavar='DEPTH', type=int, default=3,
-                   help='number of layers ...TODO, default=3')
+                   help='Number of convolutional layers, default=3')
 parser.add_argument('--dense', action='store_true',
                     help='trigger additional dense layers')
 
@@ -52,19 +54,44 @@ import torch_geometric as tg
 import lightning.pytorch as lp
 from steerable_mlp import ConvModel, Atom3D
 
+def balanced_irreps(hidden_features:int, lmax:int) -> Irreps:
+    """Divide subspaces equally over the feature budget"""
+    N = int(hidden_features / (lmax + 1))
 
-irreps_in = (Irreps("1x0e")*args.num_feat).simplify()
-irreps_hidden = (Irreps.spherical_harmonics(args.l_max)*args.num_feat).sort()[0].simplify()
-irreps_edge = Irreps.spherical_harmonics(args.l_max) #Irreps("1x1o")
-irreps_out = Irreps("1x0e")
+    irreps = []
+    for l, irrep in enumerate(Irreps.spherical_harmonics(lmax)):
+        n = int(N / (2 * l + 1))
+
+        irreps.append(str(n) + "x" + str(irrep[1]))
+
+    irreps = "+".join(irreps)
+
+    irreps = Irreps(irreps)
+
+    # Don't short sell yourself, add some more trivial irreps to fill the gap
+    gap = hidden_features - irreps.dim
+    if gap > 0:
+        irreps = Irreps("{}x0e".format(gap)) + irreps
+        irreps = irreps.simplify()
+
+    return irreps
+
+# Embed nodes as `args.embed_dim` * type-0 irreps
+irreps_in = Irreps(f"{args.embed_dim}x0e")
+# Hidden Irreps balanced across type-l<args.l_max, such that `irreps_hidden.dim == args.hidden_dim`
+irreps_hidden = balanced_irreps(args.hidden_dim, args.l_max)
+# Encode edges using spherical harmonics
+irreps_edge = Irreps.spherical_harmonics(args.l_max)
+# Convolutional layers output
+irreps_out = Irreps("16x0e")
 
 model = ConvModel(
     irreps_in=irreps_in,
     irreps_hidden=irreps_hidden,
     irreps_edge=irreps_edge,
     irreps_out=irreps_out,
-    depth=args.depth
-    # dense=... TODO
+    depth=args.depth,
+    dense=args.dense,
     )
 
 

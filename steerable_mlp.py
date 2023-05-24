@@ -179,9 +179,6 @@ class ConvModel(nn.Module):
         z:torch.Tensor          - A [N] shaped tensor with the node label/class to embed
         edge_index:torch.Tensor - [2,E] shaped tensor as edge index
         batch:torch.Tensor      - A [N] shaped tensor with labels which node belongs to which batch
-
-    Output:
-    A torch.Tensor of shape [N,1] (for every node a prediction) or [B,1] (every graph in the batch one label)
     """
     def __init__(
             self,
@@ -191,7 +188,7 @@ class ConvModel(nn.Module):
             irreps_out:Irreps,
             depth:int,
             max_z:int=9,
-            dense:bool=False
+            dense:bool=True
         ):
         """
         irreps_in:Irreps - Embed each node using this irrep
@@ -225,7 +222,17 @@ class ConvModel(nn.Module):
         # Convert hidden irrep to output irrep
         self.layers.append(ConvLayerSE3(irreps_hidden, irreps_edge, irreps_out, activation=False))
 
-        # TODO add dense layers?
+        # Finally, add some dense layers, if specified
+        # !note! this assumes `irreps_out` only consists of type-0 (scalar) irreps
+        # types >0 cannot be put through linear layers
+        self.dense=None
+        if dense:
+            self.dense = nn.Sequential(
+                nn.Linear(irreps_out.dim, 2*irreps_out.dim),
+                nn.ReLU(inplace=True),
+                nn.Dropout(p=0.1),
+                nn.Linear(2*irreps_out.dim, 1),
+            )
 
     def forward(self, graph):
         # Edge index, shape `[2, E]`
@@ -257,13 +264,15 @@ class ConvModel(nn.Module):
         for layer in self.layers:
             x = layer(edge_index, x, rel_pos_sh, dist)
 
-        # TODO: add dense layers?
+        if self.dense:
+            x = self.dense(x)
 
-        # 1-dim output, squeeze it out
-        x = x.squeeze(-1)
+        if x.shape[-1] == 1:
+            # 1-dim output, squeeze it out
+            x = x.squeeze(-1)
 
-        # Global pooling of node features to get single output for the graph
-        x = tg.nn.global_mean_pool(x, batch)
+            # Global pooling of node features to get single output for the graph
+            x = tg.nn.global_mean_pool(x, batch)
         return x
 
 
