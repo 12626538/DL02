@@ -17,9 +17,9 @@ parser.add_argument('--epochs', metavar='N', type=int, default=50,
                     help='training epochs, default=50')
 parser.add_argument('--test', metavar='PATH', default=None,
                     help='evaluate a trained model')
-parser.add_argument('--lr', metavar='RATE', default=1e-4, type=float,
+parser.add_argument('--lr', metavar='RATE', default=1e-3, type=float,
                     help='learning rate')
-parser.add_argument('--modeldir', metavar='DIR', default='models/',
+parser.add_argument('--modeldir', metavar='DIR', default='sMLPmodels/',
                     help='directory to save models to')
 parser.add_argument('--data', metavar='DIR', default='atom3d-data/',
                     help='directory to data')
@@ -55,7 +55,7 @@ from steerable_mlp import ConvModel, Atom3D
 
 irreps_in = (Irreps("1x0e")*args.num_feat).simplify()
 irreps_hidden = (Irreps.spherical_harmonics(args.l_max)*args.num_feat).sort()[0].simplify()
-irreps_edge = Irreps("1x1o")
+irreps_edge = Irreps.spherical_harmonics(args.l_max) #Irreps("1x1o")
 irreps_out = Irreps("1x0e")
 
 model = ConvModel(irreps_in, irreps_hidden, irreps_edge, irreps_out, args.depth)
@@ -97,10 +97,10 @@ logger = TensorBoardLogger(
 checkpoint_callback = ModelCheckpoint(
     dirpath=args.modeldir,
     save_top_k=2,
-    monitor="val/loss_epoch",
+    monitor="val/loss", #adjusted
     mode='min',
     save_on_train_epoch_end=True,
-    filename=_name+"-"+_version+"-{epoch:02d}-{val/loss_epoch:.2e}",
+    filename=_name+"-"+_version+"-{epoch:02d}", #adjusted
     save_last=True,
 )
 
@@ -108,7 +108,7 @@ plmodule = Atom3D(
     model=model,
     metrics=metrics,
     lr=args.lr,
-    dense=args.dense
+    #dense=args.dense   #TODO
 )
 
 # Set-up trainer
