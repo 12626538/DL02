@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#SBATCH --job-name=RunLatencyMemoryNotebook
+#SBATCH --gpus=1
+#SBATCH --partition=gpu_titanrtx_shared_course
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --time=00:03:00
+#SBATCH --mem=32000M
+#SBATCH --output=job_logs/slurm_output_run_notebook_%A.out
+
+
+# Activate env
+module purge
+module load 2022
+module load Anaconda3/2022.05
+source activate gvp
+
+# Run notebook through command line
+jupyter nbconvert \
+    "DL02/latency and memory.ipynb" \
+    --to notebook \
+    --execute \
+    --inplace \
+    --allow-errors
