@@ -58,7 +58,14 @@ irreps_hidden = (Irreps.spherical_harmonics(args.l_max)*args.num_feat).sort()[0]
 irreps_edge = Irreps.spherical_harmonics(args.l_max) #Irreps("1x1o")
 irreps_out = Irreps("1x0e")
 
-model = ConvModel(irreps_in, irreps_hidden, irreps_edge, irreps_out, args.depth)
+model = ConvModel(
+    irreps_in=irreps_in,
+    irreps_hidden=irreps_hidden,
+    irreps_edge=irreps_edge,
+    irreps_out=irreps_out,
+    depth=args.depth
+    # dense=... TODO
+    )
 
 
 # Loading Task-specific dataloaders and metrics
@@ -81,11 +88,15 @@ dataloaders:dict[str,tg.loader.DataLoader] = {
 # Setting up the logger
 # NOTE: perhaps adjust? because using tensorboard directly seems like less lines of code
 _name = str(args.task)
-if args.task == 'SMP': # kan dit niet gwn if '_name ==' zijn?
+
+# SMP consists of 20 regression metrics, specify which is trained here
+if _name == 'SMP':
     _name+=f'-smp_idx={args.smp_idx}'
-elif args.task == 'LBA':
+# LBA has a 30 or 60 split, specify which is trained here
+elif _name == 'LBA':
     _name+=f'-lba_split={args.lba_split}'
 
+# Add version to not overwrite previous models
 _version = f"{time.strftime('%Y%b%d-%T')}"
 
 logger = TensorBoardLogger(
@@ -108,7 +119,6 @@ plmodule = Atom3D(
     model=model,
     metrics=metrics,
     lr=args.lr,
-    #dense=args.dense   #TODO
 )
 
 # Set-up trainer
