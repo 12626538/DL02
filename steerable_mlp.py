@@ -296,6 +296,9 @@ class Atom3D(lp.LightningModule):
         self.metrics = metrics
         self.loss_fn = nn.MSELoss()
 
+        self.test_step_outputs = []
+        self.test_step_labels = []
+
     def forward(self, batch:tg_batch):
         return self.model(batch)
 
@@ -321,12 +324,27 @@ class Atom3D(lp.LightningModule):
         out = out.detach().cpu()
         label = batch.label.detach().cpu()
 
+        # Save for later test metric eval
+        self.test_step_outputs.append(out)
+        self.test_step_labels.append(label)
+
+        return self.loss_fn(out, label)
+
+    def on_test_epoch_end(self):
+        # concatenate all batch outputs
+        out = torch.cat(self.test_step_outputs)
+        label = torch.cat(self.test_step_labels)
+
+        # Run on metrics
         results = dict()
         for key, func in self.metrics.items():
             results[f'test/{key}'] = func(out, label)
-        self.log_dict(results, on_epoch=True, logger=True)
 
-        return self.loss_fn(out, label)
+        # Log results
+        self.log_dict(results)
+
+        self.test_step_outputs.clear()
+        self.test_step_labels.clear()
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
