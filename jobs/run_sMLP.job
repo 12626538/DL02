@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#SBATCH --job-name=RunAtom3D
+#SBATCH --job-name=RunSMLP
 #SBATCH --gpus=1
 #SBATCH --partition=gpu_titanrtx_shared_course
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --time=00:03:00
 #SBATCH --mem=32000M
-#SBATCH --output=job_logs/slurm_output_runatom_3d_%A.out
+#SBATCH --output=job_logs/slurm_output_smlp_%A.out
 
 
 # Activate env
@@ -17,13 +17,13 @@ module load Anaconda3/2022.05
 source activate gvp
 
 # Some constants
-JOB_FILE_HOME=$HOME/run_atom3d.job
-EXEC_FILE=$HOME/DL02/run_atom3d.py
+JOB_FILE_HOME=$HOME/run_sMLP.job
+EXEC_FILE=$HOME/DL02/run_sMLP.py
 
 # Job specific variables
 TASK="LBA"
 BATCH_SIZE=1
-CHECKPOINT_DIR=$HOME/DL02/best_models/LBA_lba-split=30_47.pt
+CHECKPOINT_DIR=$HOME/DL02/sMLPmodels/LBA-lba_split=30-epoch=10.ckpt
 DATA_DIR=$HOME/data/
 LBA_SPLIT=30 # 30 or 60
 
@@ -32,4 +32,4 @@ srun python -u $EXEC_FILE $TASK \
 	--lba-split $LBA_SPLIT \
 	--batch $BATCH_SIZE \
 	--test $CHECKPOINT_DIR \
-	--data $DATA_DIR \
+	--data $DATA_DIR
