@@ -253,9 +253,7 @@ class ConvModel(nn.Module):
         # Vector pointing from the source node to the target node
         rel_pos = pos[tgt] - pos[src]
         # That vector in Spherical Harmonics (Irrep feature)
-        rel_pos_sh = o3.spherical_harmonics(self.irreps_edge, rel_pos, normalize=True,
-                                            normalization="norm",
-                                            ) #normalization="component",
+        rel_pos_sh = o3.spherical_harmonics(self.irreps_edge, rel_pos, normalize=True)
         # The norm of that vector (Scalar feature)
         dist = torch.linalg.vector_norm(rel_pos, dim=-1, keepdims=True)
 
@@ -332,8 +330,8 @@ class Atom3D(lp.LightningModule):
 
     def on_test_epoch_end(self):
         # concatenate all batch outputs
-        out = torch.cat(self.test_step_outputs)
-        label = torch.cat(self.test_step_labels)
+        out = torch.cat(self.test_step_outputs, dim=0)
+        label = torch.cat(self.test_step_labels, dim=0)
 
         # Run on metrics
         results = dict()

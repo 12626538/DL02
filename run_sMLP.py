@@ -168,23 +168,3 @@ if checkpoint_callback.best_model_path:
     results = trainer.test(plmodule, dataloaders['test'], ckpt_path=checkpoint_callback.best_model_path)
 elif args.test:
     results = trainer.test(plmodule, dataloaders['test'], ckpt_path=args.test)
-
-
-    def test(model, testset):
-        import torch
-        model.eval()
-
-        metrics = model.metrics
-        targets, predicts, ids = [], [], []
-        with torch.no_grad():
-            for batch in testset:
-                pred = model.forward(batch).detach()
-                label = batch.label.detach()
-                targets.extend(list(label.cpu().numpy()))
-                predicts.extend(list(pred.cpu().numpy()))
-
-        for name, func in metrics.items():
-            value = func(targets, predicts)
-            print(f"{name}: {value}")
-
-    test(plmodule, dataloaders['test'])

@@ -105,6 +105,27 @@ Below we show short summary of the results obtained by the steerable MLP model, 
     - mean: 1.6410435438156
     - std: 0.043558788772982-->
 
+
+<!-- sMLP RSME different runs op LBA split=30
+- run 1 : 1.5121526718139648 
+- run 2 : x
+- run 3 : x -->
+
+<!-- sMLP RSME different runs op LBA split=60
+- run 1 : 0.6029561758041382
+- run 2 : x
+- run 3 : x -->
+
+<!-- sMLP DENSE RSME different runs op LBA split=30
+- run 1 : 1.5981481075286865 
+- run 2 : x
+- run 3 : x -->
+
+<!-- sMLP DENSE RSME different runs op LBA split=60
+- run 1 : 0.6065027117729187
+- run 2 : x
+- run 3 : x -->
+
 ## Deep Learning 2
 This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam
 
