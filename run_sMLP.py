@@ -83,7 +83,10 @@ irreps_hidden = balanced_irreps(args.hidden_dim, args.l_max)
 # Encode edges using spherical harmonics
 irreps_edge = Irreps.spherical_harmonics(args.l_max)
 # Convolutional layers output
-irreps_out = Irreps("16x0e")
+if args.dense:
+     irreps_out = Irreps("16x0e")
+else:
+    irreps_out = Irreps("1x0e")
 
 model = ConvModel(
     irreps_in=irreps_in,
@@ -113,7 +116,6 @@ dataloaders:dict[str,tg.loader.DataLoader] = {
 }
 
 # Setting up the logger
-# NOTE: perhaps adjust? because using tensorboard directly seems like less lines of code
 _name = str(args.task)
 
 # SMP consists of 20 regression metrics, specify which is trained here

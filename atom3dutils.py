@@ -133,7 +133,7 @@ def get_metrics(task):
         'RES' : {'accuracy': metrics.accuracy},
         'MSP' : {'auroc': metrics.auroc, 'auprc': metrics.auprc},
         'LEP' : {'auroc': metrics.auroc, 'auprc': metrics.auprc},
-        'LBA' : {**correlations, 'rmse': partial(sk_metrics.mean_squared_error, squared=False)},
+        'LBA' : {'rmse': partial(sk_metrics.mean_squared_error, squared=False)}, #**correlations removed for now
         'SMP' : {'mae': sk_metrics.mean_absolute_error}
     }[task]
 
