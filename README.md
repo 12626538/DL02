@@ -101,7 +101,9 @@ Below we show short summary of the results obtained by the steerable MLP model, 
 <!-- GVP reproduction RSME different runs op LBA split=60
     - run 1 : 1.5962501764297485 
     - run 2 : 1.6832526922225952
-    - run 3 : 1.6436277627944946 -->
+    - run 3 : 1.6436277627944946 
+    - mean: 1.6410435438156
+    - std: 0.043558788772982-->
 
 ## Deep Learning 2
 This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam

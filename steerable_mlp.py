@@ -253,7 +253,9 @@ class ConvModel(nn.Module):
         # Vector pointing from the source node to the target node
         rel_pos = pos[tgt] - pos[src]
         # That vector in Spherical Harmonics (Irrep feature)
-        rel_pos_sh = o3.spherical_harmonics(self.irreps_edge, rel_pos, normalize=True)
+        rel_pos_sh = o3.spherical_harmonics(self.irreps_edge, rel_pos, normalize=True,
+                                            normalization="norm",
+                                            ) #normalization="component",
         # The norm of that vector (Scalar feature)
         dist = torch.linalg.vector_norm(rel_pos, dim=-1, keepdims=True)
 
