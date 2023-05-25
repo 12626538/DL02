@@ -81,7 +81,6 @@ We aim to improve performance of the GVP layers by no longer requiring the scala
 
 Our hypothesis is that the scalar features used as output of the model will be more expressive of the geometry of the data when using steerable basis. These steerable basis will allow for better communication between the scalar and geometric features which includes orientation, rather than just the norm.
 
-<!-- Jip schrijft hier nog wat meer met steerable -->
 
 ### 3.1. Tasks
 
@@ -131,6 +130,7 @@ Our results were as follows:
 From these results we conclude that the LBA task is close enough to the original paper that our reproduction is succesfull. Although MSP is close enough to use this task for the adaption, training the model on this task took nearly 10 hours, which is reason to prefer LBA. The reproduction RSR task is globally also very close, however the mean $R_s$ has a big deviation, thus we do not use this task for further research. All other tasks did not have the results reproduced good enough for us to use futher.
 
 ### 3.3 Steerable MLP
+<!-- Jip schrijft hier nog wat meer met steerable -->
 
 <!--
 ChatGPT stuff on the explanation of steerable graph convolutions
@@ -143,9 +143,8 @@ The steerable graph convolutional operation can be represented as:
 Overall, steerable graph convolutions offer a flexible and efficient way to perform graph convolutional operations in any direction, making them suitable for a wide range of graph-based machine learning tasks.
  -->
 ### 3.4 Testing Equivariance
-In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method, used by the original authors, as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. 
+In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method, used by the original authors, as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. Since the input of this model is represented using irreducible representations, each individual part needs to be rotated accordingly. So, after sampling a random 3D rotation matrix, it is transformed to do so. The remaining steps of testing equivariance is the same as described in [Section 1](#1-introduction).
 
-Since the graph is represented using irreducible representations, each part 
 
 ## 4. Conclusion
 <!-- Conclude -->
@@ -155,7 +154,7 @@ Since the graph is represented using irreducible representations, each part
 
 ## 5. Contributions
 <!-- Close the notebook with a description of each student's contribution. -->
-<!-- Simon: provided taartjes
+Simon: provided taartjes
 
-Noa: cried -->
+Noa: cried
 
