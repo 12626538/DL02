@@ -11,43 +11,45 @@ And altered for our use
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-import argparse
+def parse_args():
+    import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument('task', metavar='TASK', choices=[
-        'SMP', 'PSR', 'RSR', 'MSP', 'SMP', 'LBA', 'LEP', 'PPI', 'RES'
-    ], help="{PSR, RSR, PPI, RES, MSP, SMP, LBA, LEP}")
-parser.add_argument('--num-workers', metavar='N', type=int, default=4,
-                   help='number of threads for loading data, default=4')
-parser.add_argument('--smp-idx', metavar='IDX', type=int, default=None,
-                   choices=list(range(20)),
-                   help='label index for SMP, in range 0-19')
-parser.add_argument('--lba-split', metavar='SPLIT', type=int, choices=[30, 60],
-                    help='identity cutoff for LBA, 30 (default) or 60', default=30)
-parser.add_argument('--batch', metavar='SIZE', type=int, default=8,
-                    help='batch size, default=8')
-parser.add_argument('--train-time', metavar='MINUTES', type=int, default=120,
-                    help='maximum time between evaluations on valset, default=120 minutes')
-parser.add_argument('--val-time', metavar='MINUTES', type=int, default=20,
-                    help='maximum time per evaluation on valset, default=20 minutes')
-parser.add_argument('--epochs', metavar='N', type=int, default=50,
-                    help='training epochs, default=50')
-parser.add_argument('--test', metavar='PATH', default=None,
-                    help='evaluate a trained model')
-parser.add_argument('--lr', metavar='RATE', default=1e-4, type=float,
-                    help='learning rate')
-parser.add_argument('--load', metavar='PATH', default=None,
-                    help='initialize first 2 GNN layers with pretrained weights')
-parser.add_argument('--save', metavar='DIR', default='models',
-                    help='directory to save models to')
-parser.add_argument('--data', metavar='DIR', default='atom3d-data/',
-                    help='directory to data')
-parser.add_argument('--monitor', action='store_true',
-                    help='trigger tensorboard monitoring')
-parser.add_argument('--no-pbar', action='store_true',
-                    help='when set, do not show TQDM bars')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('task', metavar='TASK', choices=[
+            'SMP', 'PSR', 'RSR', 'MSP', 'SMP', 'LBA', 'LEP', 'PPI', 'RES'
+        ], help="{PSR, RSR, PPI, RES, MSP, SMP, LBA, LEP}")
+    parser.add_argument('--num-workers', metavar='N', type=int, default=4,
+                    help='number of threads for loading data, default=4')
+    parser.add_argument('--smp-idx', metavar='IDX', type=int, default=None,
+                    choices=list(range(20)),
+                    help='label index for SMP, in range 0-19')
+    parser.add_argument('--lba-split', metavar='SPLIT', type=int, choices=[30, 60],
+                        help='identity cutoff for LBA, 30 (default) or 60', default=30)
+    parser.add_argument('--batch', metavar='SIZE', type=int, default=8,
+                        help='batch size, default=8')
+    parser.add_argument('--train-time', metavar='MINUTES', type=int, default=120,
+                        help='maximum time between evaluations on valset, default=120 minutes')
+    parser.add_argument('--val-time', metavar='MINUTES', type=int, default=20,
+                        help='maximum time per evaluation on valset, default=20 minutes')
+    parser.add_argument('--epochs', metavar='N', type=int, default=50,
+                        help='training epochs, default=50')
+    parser.add_argument('--test', metavar='PATH', default=None,
+                        help='evaluate a trained model')
+    parser.add_argument('--lr', metavar='RATE', default=1e-4, type=float,
+                        help='learning rate')
+    parser.add_argument('--load', metavar='PATH', default=None,
+                        help='initialize first 2 GNN layers with pretrained weights')
+    parser.add_argument('--save', metavar='DIR', default='models',
+                        help='directory to save models to')
+    parser.add_argument('--data', metavar='DIR', default='atom3d-data/',
+                        help='directory to data')
+    parser.add_argument('--monitor', action='store_true',
+                        help='trigger tensorboard monitoring')
+    parser.add_argument('--no-pbar', action='store_true',
+                        help='when set, do not show TQDM bars')
 
-args = parser.parse_args()
+    args = parser.parse_args()
+    return args
 
 import gvp
 from atom3d.datasets import LMDBDataset
@@ -62,22 +64,25 @@ import sklearn.metrics as sk_metrics
 from collections import defaultdict
 import scipy.stats as stats
 
-# For tensorboard view
-from torch.utils.tensorboard import SummaryWriter
-# avoid creating an event file when we don't want one
-if args.monitor:
-    writer = SummaryWriter()
+def setup():
+    global print, writer, device, model_id
 
-if args.test == None:
-    print("Hyperparams:")
-    print(args)
+    # For tensorboard view
+    from torch.utils.tensorboard import SummaryWriter
+    # avoid creating an event file when we don't want one
+    if args.monitor:
+        writer = SummaryWriter()
 
-print = partial(print, flush=True)
+    if args.test == None:
+        print("Hyperparams:")
+        print(args)
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-if args.test == None:
-    print("Device:",device)
-model_id = float(time.time())
+    print = partial(print, flush=True)
+
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if args.test == None:
+        print("Device:",device)
+    model_id = float(time.time())
 
 def main():
     datasets = get_datasets(args.task, args.data, args.lba_split)
@@ -165,6 +170,7 @@ def loop(dataset, model, optimizer=None, max_time=None):
     if args.no_pbar:
         t = dataset
         print(f"[{time.strftime('%T')}] LOOP...")
+        # print(f"There are {len(t)} batches to parse")
     else:
         t = tqdm.tqdm(dataset)
     total_loss, total_count = 0, 0
@@ -173,6 +179,7 @@ def loop(dataset, model, optimizer=None, max_time=None):
     for batch in t:
         if max_time and (time.time() - start) > 60*max_time: break
         if optimizer: optimizer.zero_grad()
+
         try:
             out = forward(model, batch, device)
         except RuntimeError as e:
@@ -181,6 +188,7 @@ def loop(dataset, model, optimizer=None, max_time=None):
             print(f'Skipped batch due to OOM at batch {i}', flush=True)
             continue
 
+        # print(f"[{time.strftime('%T')}] At batch {i}, using {torch.cuda.memory_allocated(device)/1073741824:.2f}GB memory")
         i+=1
 
         label = get_label(batch, args.task, args.smp_idx)
@@ -315,4 +323,7 @@ def get_model(task):
     }[task]()
 
 if __name__ == "__main__":
+    global args
+    args = parse_args()
+    setup()
     main()
