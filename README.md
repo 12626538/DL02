@@ -85,10 +85,11 @@ Below we show short summary of the results obtained by the steerable MLP model, 
 
 |                       | RMSE &#8595;  |
 | -------------         | ------------- |
-| GVP (original paper)  | 1.594 &#177; 0.073    | 
-| GVP (reproduced)      | 1.598  &#177; 0.020   |
-| sMLP                  | xx &#177;             |
-| sMLP (dense)          | ....   &#177;         |
+| GVP (original paper)  | 1.594 &#177; 0.073   | 
+| GVP (reproduced)      | 1.598 &#177; 0.020   |
+| sMLP                  | 1.540 &#177; 0.0688  |
+| sMLP (dense)          | 1.522 &#177; 0.0693  |
+
 
 <!-- down &#8595; ->
 <!-- up &#8593; -->
@@ -96,7 +97,9 @@ Below we show short summary of the results obtained by the steerable MLP model, 
 <!-- GVP reproduction RSME different runs op LBA split=30
     - run 1 : 1.577064037322998 
     - run 2 : 1.616431474685669
-    - run 3 : 1.6020700931549072 -->
+    - run 3 : 1.6020700931549072 
+    - mean: 1.5985218683879
+    - std: 0.019922128535226 -->
 
 <!-- GVP reproduction RSME different runs op LBA split=60
     - run 1 : 1.5962501764297485 
@@ -105,26 +108,33 @@ Below we show short summary of the results obtained by the steerable MLP model, 
     - mean: 1.6410435438156
     - std: 0.043558788772982-->
 
-
 <!-- sMLP RSME different runs op LBA split=30
-- run 1 : 1.5121526718139648 
-- run 2 : x
-- run 3 : x -->
+    - run 1 : 1.5121526718139648 
+    - run 2 : 1.6194381713867188
+    - run 3 : 1.491175651550293
+    - mean: 1.540922164917
+    - std: 0.068801026872796 -->
 
 <!-- sMLP RSME different runs op LBA split=60
-- run 1 : 0.6029561758041382
-- run 2 : x
-- run 3 : x -->
+    - run 1 : 1.3332748413085938
+    - run 2 : 1.3350021839141846  
+    - run 3 : 1.3006025552749634 
+    - mean: 1.3229598601659
+    - std: 0.019381247111821  -->
 
 <!-- sMLP DENSE RSME different runs op LBA split=30
-- run 1 : 1.5981481075286865 
-- run 2 : x
-- run 3 : x -->
+    - run 1 : 1.5981481075286865 
+    - run 2 : 1.505611777305603     
+    - run 3 : 1.462575078010559 
+    - mean: 1.5221116542816
+    -std: 0.069276229966334 -->
 
 <!-- sMLP DENSE RSME different runs op LBA split=60
-- run 1 : 0.6065027117729187
-- run 2 : x
-- run 3 : x -->
+    - run 1 : 1.3841136693954468  
+    - run 2 : 1.3234361410140991
+    - run 3 : 1.2702085971832275 
+    - mean: 1.3259194691976
+    - std: 0.056993127288015    -->
 
 ## Deep Learning 2
 This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam

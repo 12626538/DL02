@@ -22,14 +22,15 @@ EXEC_FILE=$HOME/DL02/run_sMLP.py
 
 # Job specific variables
 TASK="LBA"
-BATCH_SIZE=1
-CHECKPOINT_DIR=$HOME/DL02/sMLPmodels/LBA-lba_split=30-epoch=10.ckpt
+BATCH_SIZE=8
+CHECKPOINT_DIR=$HOME/DL02/sMLPmodels/LBA-lba_split=60-epoch=45_run3.ckpt
 DATA_DIR=$HOME/data/
-LBA_SPLIT=30 # 30 or 60
+LBA_SPLIT=60 # 30 or 60
 
 # Run executable
 srun python -u $EXEC_FILE $TASK \
 	--lba-split $LBA_SPLIT \
 	--batch $BATCH_SIZE \
 	--test $CHECKPOINT_DIR \
-	--data $DATA_DIR
+	--data $DATA_DIR \
+	# --dense
