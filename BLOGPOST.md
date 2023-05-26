@@ -6,7 +6,7 @@ by *Synthesized Solutions*
 
 <!-- An analysis of the paper and its key components. Think about it as nicely formatted review as you would see on OpenReview.net -->
 
-Machine learning is increasingly being applied to the analysis of molecules for tasks such as protein design, model quality assessment, and ablation studies. These techniques can help us better understand the structure and function of proteins, which is useful for many medical application, such as drug discovery. Convolutional Neural Networks (CNNs) and Graph Neural Networks (GNNs) are two types of machine learning models that are  particularly well-suited for analyzing molecular data. CNNs can operate directly on the geometry of a structure and GNNs are expressive in terms of relational reasoning.
+Machine learning is increasingly applied to molecular analysis for tasks such as protein design, model quality assessment, and ablation studies. These techniques can help us better understand the structure and function of proteins, which is useful for many medical application, such as drug discovery. Convolutional Neural Networks (CNNs) and Graph Neural Networks (GNNs) are two types of machine learning models that are  particularly well-suited for analyzing molecular data. CNNs can operate directly on the geometry of a structure and GNNs are expressive in terms of relational reasoning.
 
 However, proteins are complex biomolecules with a unique three-dimensional structure that is critical to their function and modeling the interactions between non-adjacent amino acids can be challenging. Both CNNs and GNNs can be translation invariant and equivariant, but these properties cannot be guaranteed for rotations in typical implementations.  Formally, we can define invariance and equivariance as follows:
 
@@ -15,14 +15,14 @@ $$\begin{align}
 \text{Equivariance:} && f(g\cdot x) &= g\cdot f(x).
 \end{align}$$
 
-In order to take more geometric information into account, Jing, Eismann, Suriana, Townshend, and Dror (2020) propose a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. Instead of encoding 3D geometry of proteins, i.e. vector features, in terms of rotation-invariant scalars, they propose that vector features be directly represented as geometric vectors in 3D space at all steps of graph propagation. They claim this approach improves the GNN's ability to reason geometrically and capture the spatial relationships between atoms and residues in a protein structure.
+In order to take more geometric information into account, [Jing et al, 2021](https://doi.org/10.48550/arXiv.2106.03843) propose a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. Instead of encoding 3D geometry of proteins, i.e. vector features, in terms of rotation-invariant scalars, they propose that vector features be directly represented as geometric vectors in 3D space at all steps of graph propagation. They claim this approach improves the GNN's ability to reason geometrically and capture the spatial relationships between atoms and residues in a protein structure.
 
-This modification to the standard GNN consists of changing the multilayer perceptrons (MLPs) with geometric vector perceptrons (GVPs), see also Figure 1 (top). The GVP approach described in the paper is used to learn the relationship between protein sequences and their structures. GVPs are a type of layer that operates on geometric objects, such as vectors and matrices, rather than scalar values like most neural networks. This makes GVPs well-suited to tasks that involve analyzing spatial relationships, which is highly important for protein structures. To show this improvement, the model is evaluated on various tasks from the Atom3D dataset described in [Section 3](#31-tasks).
+This modification to the standard GNN consists of changing the multilayer perceptrons (MLPs) with geometric vector perceptrons (GVPs), see also Figure 1 (top). The GVP approach described in the paper is used to learn the relationship between protein sequences and their structures. GVPs are a type of layer that operates on geometric objects, such as vectors and matrices, rather than scalar values like most neural networks. This makes GVPs well-suited to tasks that involve analyzing spatial relationships, which is highly important for protein structures. To show this improvement, the model is evaluated on various tasks from the Atom3D dataset ([Townshend, R. J., et al. 2020](https://doi.org/10.48550/arXiv.2012.04035)) described in [Section 3](#31-tasks).
 
-In GVP-GNNs, node and edge embeddings are represented as tuples of scalar features and geometric vector features. The message and update functions are parameterized by geometric vector perceptrons, which are modules that map between the tuple representations while preserving rotational invariance. In a follow-up paper by Jing, Eismann, Soni, and Dror (2021) they extended the GVP-GNN architecture to handle atomic-level structure representations, which allows the architecture to be used for a wider range of tasks. <!-- why, idk rn -->
+In GVP-GNNs, node and edge embeddings are represented as tuples of scalar features and geometric vector features. The message and update functions are parameterized by geometric vector perceptrons, which are modules that map between the tuple representations while preserving rotational invariance. In a follow-up paper by [Jing et al., 2020](https://doi.org/10.48550/arXiv.2009.01411) they extended the GVP-GNN architecture to handle atomic-level structure representations, which allows the architecture to be used for a wider range of tasks. <!-- why, idk rn -->
 
 In the original GVP-GNN architecture, vector outputs are functions of vector inputs, but these output vectors do not depend on the scalar inputs. This can be an issue for atomic-level structure graphs where individual atoms may not necessarily have an orientation. <!-- also don't really understand why -->
-To address this issue, Jing et al. (2021) propose vector gating as a way to propagate information from the scalar channels into the vector channels, see Figure 1 (bottom). This involves transforming the scalar features and passing them through a sigmoid activation function to “gate” the vector output, replacing the vector non-linearity. In their paper they note that the equivariance of the vector features is not affected, because the scalar features are invariant and the gating is row-wise. They conclude that vector gating can help improve the GVP-GNN's ability to handle atomic-level structure representations and therefore machine learning on molecules.
+To address this issue, [Jing et al., 2020](https://arxiv.org/abs/2009.01411) propose vector gating as a way to propagate information from the scalar channels into the vector channels, see Figure 1 (bottom). This involves transforming the scalar features and passing them through a sigmoid activation function to “gate” the vector output, replacing the vector non-linearity. In their paper they note that the equivariance of the vector features is not affected, because the scalar features are invariant and the gating is row-wise. They conclude that vector gating can help improve the GVP-GNN's ability to handle atomic-level structure representations and therefore machine learning on molecules.
 
 Lastly, as mentioned, the equivariance to rotation of the models is very important and in order to test this property, the original authors have tested the GVP to check if the models behave the same when the conditions are rotated randomly. We can summarize this behaviour into two points, namely:
 
@@ -47,7 +47,7 @@ Lastly, as mentioned, the equivariance to rotation of the models is very importa
 - only invariant to rotation, due to taking norm (scalar value) (i think) -> this is only the case in the 2020 paper, but not necessarily in the 2021 paper, so i think we really need to focus on the expressiveness and not necessarily the equivariance
 #END NOTES# -->
 
-The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance whilst using a model is not very computationally demanding. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, the authors introduced vector-gating to retain the rotational equivariance of vector features, but this version of the GVP can only exchange information between scalar and geometric features using scalar values (either the norm or using gating). A point of improvement we are aiming for is to increase the expressiveness of this model by improving this sharing between scalar and geometric features to incorporate orientation into the scalar features.
+The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance, which it achieves using a model of low computational burden. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, the authors introduced vector-gating to retain the rotational equivariance of vector features, but this version of the GVP can only exchange information between scalar and geometric features using scalar values (either the norm or using gating). We aim to improve the expressiveness of this model by improving the sharing between scalar and geometric features to incorporate orientation into the scalar features.
 
 <!-- $\newcommand{\bs}[1]{\boldsymbol{#1}} \newcommand{\norm}[1]{\lVert#1\rVert_2}$ <!-- why does this have to be impossible on GitHub >:( -->
 
@@ -77,18 +77,18 @@ $$\begin{equation}
 ## 3. Our Contribution  <!-- uitbreiden met uitleg over steerable convolution of graph -->
 
 <!-- Describe your novel contribution. -->
-We aim to improve performance of the GVP layers by no longer requiring the scalar features to be independent of the orientation of the geometric features. In the GVP layers, by taking the norm of these features, important information of the orientation is lost. For the Atom3D tasks used for evaluation, a model is used that only takes the output scalar features of all nodes, and therefore does not take orientation into account explicitely. This limits the expressiveness of the model.
+We aim to improve performance of the GVP layers by no longer requiring the scalar features to be independent of the orientation of the geometric features. In the GVP layers, by taking the norm of the geometric features, important information of the orientation is lost. For the Atom3D tasks used for evaluation, a model is used that only takes the output scalar features of all nodes, and therefore does not take orientation into account explicitely. This limits the expressiveness of the model.
 
 Our hypothesis is that the scalar features used as output of the model will be more expressive of the geometry of the data when using steerable basis. These steerable basis will allow for better communication between the scalar and geometric features which includes orientation, rather than just the norm.
 
 
 ### 3.1. Tasks
 
-The authors of the original paper use eight tasks to test the quality of their model. These tasks are [**LBA**](#lba), [**SMP**](#smp), [**MSP**](#msp), [**PSR**](#psr) and [**RSR**](#rsr). These tasks have the following definitions:
+The authors of the original paper use eight tasks from Atom3D ([Townshend, R. J., et al. 2020](https://doi.org/10.48550/arXiv.2012.04035)) to test the quality of their model. These tasks are [**LBA**](#lba), [**SMP**](#smp), [**MSP**](#msp), [**PSR**](#psr) and [**RSR**](#rsr). These tasks have the following definitions:
 
 #### LBA
 
-“*Ligand Binding Affinity*” is a regression task with the goal to predict the binding affinity of a protein-ligand complex. This complex describes the binding interactions between a small molecule *ligand* and its target *protein*. These interactions can result in gain or loss of functional effects that can be utilized for a beneficial medicinal effect. Predicting and determining the intermolecular forces that affect binding between a protein and potential ligand therefore plays an important role in optimizing the drug discovery process. In this task, the goal of the model is to predict the binding affinity between the biomolecule and its ligand. Here, the affinity is described as the negative logarithm of the equilibrium dissociation constant, $K_D$, which serves as a robust measure for indicating the presence of strong binding interactions. This task was provided with different training/validation splits. ([Wang, R. et al., 2004](https://doi.org/10.1021/jm030580l); [Liu, Z. et al., 2015](https://doi.org/10.1093/bioinformatics/btu626))
+“*Ligand Binding Affinity*” is a regression task with the goal to predict the binding affinity of a protein-ligand complex. This complex describes the binding interactions between a small molecule *ligand* and its target *protein*. These interactions can result in gain or loss of functional effects that can be utilized for a beneficial medicinal effect. Predicting and determining the intermolecular forces that affect binding between a protein and potential ligand therefore plays an important role in optimizing the drug discovery process. In this task, the goal of the model is to predict the binding affinity between the biomolecule and its ligand. Here, the affinity is described as the negative logarithm of the equilibrium dissociation constant, $K_D$, which serves as a robust measure for indicating the presence of strong binding interactions. <!-- This task was provided with different training/validation splits. --> ([Wang, R. et al., 2004](https://doi.org/10.1021/jm030580l); [Liu, Z. et al., 2015](https://doi.org/10.1093/bioinformatics/btu626))
 
 #### SMP
 
@@ -110,33 +110,35 @@ The authors of the original paper use eight tasks to test the quality of their m
 
 Since the code of the paper was given to us, it was relatively easy to reproduce the results of the original paper. We reproduced all the tasks that our cluster could handle. Once we had all the results, we could build upon a task that was correctly reproduced. We only use tasks that are close to the original papers because only these task can give a clear and correct indication if our contribution improves the model.
 
+<!-- SAY SOMETHING ABOUT HOW WE SUSPECT -kno fo sho- THAT THEY ONLY REPORT LBA SPLIT 30 OR N/A FOR THEIR VALUE THEIR -->
+
 Our results were as follows:
 | Task                    | Metric               | Jing et al. | Ours      |
 |-------------------------|----------------------|-------------|-----------|
-| LBA (Split 30)          | RMSE &#8595;         | **1.594**   | **1.598** |
-| LBA (Split 60)          | RMSE &#8595;         | **1.594**   | **1.641** |
-| SMP $\mu[D]$            | MAE   &#8595;        |   0.049     |   0.144   |
-| SMP $\sigma_{gap} [eV]$ | MAE   &#8595;        |   0.065     |   0.0058  |
-| SMP $U^{at}_0 [eV]$     | MAE   &#8595;        |   0.143     |   0.0259  |
-| MSP                     | AUROC       &#8593;  | **0.680**   | **0.672** |
-| PSR                     | global $R_s$ &#8593; | **0.845**   | **0.854** |
-| PSR                     | mean $R_s$  &#8593;  |   0.511     |   0.602   |
-| RSR                     | global $R_s$ &#8593; | **0.330**   | **0.331** |
-| RSR                     | mean $R_s$  &#8593;  |   0.221     |   0.018   |
+| LBA (Split 30)          | RMSE                 | **1.594**   | **1.598** |
+| LBA (Split 60)          | RMSE                 |      -      | **1.641** |
+| SMP $\mu[D]$            | MAE                  |   0.049     |   0.144   |
+| SMP $\sigma_{gap} [eV]$ | MAE                  |   0.065     |   0.0058  |
+| SMP $U^{at}_0 [eV]$     | MAE                  |   0.143     |   0.0259  |
+| MSP                     | AUROC                | **0.680**   | **0.672** |
+| PSR                     | global $R_s$         | **0.845**   | **0.854** |
+| PSR                     | mean $R_s$           |   0.511     |   0.602   |
+| RSR                     | global $R_s$         | **0.330**   | **0.331** |
+| RSR                     | mean $R_s$           |   0.221     |   0.018   |
 
 <!-- down &#8595; ->
 <!-- up &#8593; -->
 
-From these results we conclude that the LBA task is close enough to the original paper that our reproduction is succesfull. Although MSP is close enough to use this task for the adaption, training the model on this task took nearly 10 hours, which is reason to prefer LBA. The reproduction RSR task is globally also very close, however the mean $R_s$ has a big deviation, thus we do not use this task for further research. All other tasks did not have the results reproduced good enough for us to use futher.
+From these results we conclude that the LBA task is close enough to the original paper that our reproduction is successfull. Although MSP is close enough to use this task for the adaption, training the model on this task took nearly 10 hours, which is reason to prefer LBA. The reproduction RSR task is globally also very close, however the mean $R_s$ has a big deviation, thus we do not use this task for further research. All other tasks did not have the results reproduced good enough for us to use further.
 
 ### 3.3 Steerable MLP
 <!-- Jip schrijft hier nog wat meer met steerable -->
 
-This section is mostly extracted from _Geometric and Physical Quantities improve $E(3)$ Equivariant Message Passing_ (Brandstetter et al., 2022).
+This section is mostly extracted from _Geometric and Physical Quantities improve $E(3)$ Equivariant Message Passing_ [(Brandstetter et al., 2022)](https://doi.org/10.48550/arXiv.2110.02905).
 
 Steerable features are a type of vector that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\tilde{\boldsymbol{h}}$). The type of this vector indicates the type of information it holds, where (most commonly used in this work) type-$0$ are scalar features and type-$1$ are euclidean (XYZ) vectors. More general, a type-$l$ steerable feature is a $2l+1$-dimensional vector. These steerable features can be transformed using Wigner-D matrices, denoted by $\boldsymbol{D}(g)$.
 
-Steerable MLP are a type of Multi-Layer Perceptrons that, just like regular MLPs, interleave linear mapping with non-linearities. Unlike regular MLP, steerable MLP make use of conditional weights, paramaterized by a steerable vector $\tilde{\boldsymbol{a}}$. Given a steerable feature vector $\tilde{\boldsymbol{h}}^{(i)}$ at layer $i$, the updated feature vector at $i+1$ can be formalized as
+Steerable MLP are a type of Multi-Layer Perceptrons that, just like regular MLPs, interleave linear mapping with non-linearities. Unlike regular MLP, steerable MLP make use of conditional weights, parameterized by a steerable vector $\tilde{\boldsymbol{a}}$. Given a steerable feature vector $\tilde{\boldsymbol{h}}^{(i)}$ at layer $i$, the updated feature vector at $i+1$ can be formalized as
 $$
 \tilde{\boldsymbol{h}}^{(i+1)} = \boldsymbol{W}^{(i)}_{\boldsymbol{\tilde{a}}}\ \tilde{\boldsymbol{h}}^{(i)}
 $$
@@ -194,6 +196,7 @@ $$
 
 
 #### Our implementation
+
 As input, $\tilde{\boldsymbol{h}}^{(l_n)}_i$ are steerable node features of type $l_n$, the edge feature $\boldsymbol{e}_{ij}$ with L2-norm $|| \boldsymbol{e}_{ij} ||$ gives steerable feature $\tilde{\boldsymbol{a}}^{(l_e)}_{ij}$ of type $l_e$. Output are features $\tilde{\boldsymbol{h}}^{(l_{out})}_i$ of type $l_{out}$.
 
 Updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $l_m$) are therefore already of type $l_{out}$.
@@ -221,12 +224,12 @@ The full model consists of ... **TODO**
 
 
 ### 3.4 Testing Equivariance
-In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method, used by the original authors, as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. Since the input of this model is represented using irreducible representations, each individual part needs to be rotated accordingly. So, after sampling a random 3D rotation matrix, it is transformed to do so. The remaining steps of testing equivariance is the same as described in [Section 1](#1-introduction).
+
+In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method, used by the original authors, as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. Since the input of this model is represented using irreducible representations, each individual part needs to be rotated accordingly. So, after sampling a random 3D rotation matrix, it is transformed to do so. The remaining steps of testing equivariance is the same as described in [Section 1](#1-introduction). The implementation for this method/test can be found in this [notebook](./demo.ipynb).
 
 
 
 ## Results
-
 <!-- GVP reproduction RSME different runs op LBA split=30
     - run 1 : 1.577064037322998 
     - run 2 : 1.616431474685669
@@ -269,16 +272,34 @@ In order to verify if our implementation of the steerable MLP is equivariant to 
     - mean: 1.3259194691976
     - std: 0.056993127288015    -->
 
+In this section we compare the results of Jing et al. to our reproduction and to the results of our implementation of a steerable MLP (sMLP), with and without dense layers, for both splits of the LBA task. 
 
+| Task                    | Metric               | Jing et al. |     Reproduction     |  sMLP                | sMLP DENSE            |
+|-------------------------|----------------------|-------------|----------------------|----------------------|-----------------------|
+| LBA (Split 30)          | RMSE &#8595;         | 1.594       | 1.599 &#177;  0.020  |  1.541 &#177; 0.069  |  1.522 &#177; 0.070   |
+| LBA (Split 60)          | RMSE &#8595;         | -           | 1.641 &#177;  0.044  |  1.323 &#177; 0.019  |  1.326 &#177; 0.057   |
+
+This table shows that the sMLP, with and without dense layer, outperforms the original and the reproduced results for the LBA task with split 30. The sMLP also significantly outperforms the reproduction of the GVP model for the LBA task with split 60. 
+
+For both tasks, the reproducing took on average 1.5 hours with a batch size of 8, whilst the sMLP (with and without dense layers) took on average 3 hours with a batch size of 1. The decrease of batch size was the consequence of the sMLP needing more memory during training than the GVP and not having enough memory on the GPU otherwise.
+
+For the LBA task with split 30, the GVP model needed at least 47 epochs to acquire the best model, whilst the sMLP needed at most 22 epochs. For the LBA task with split 60, both models needed more than 40 epochs to find the best model.
+
+<!-- Computational requirements -->
+The GVP model has lower memory requirements than our steerable implementation, both in terms of gradients that should be stored as well as the memory allocated during inference. The molecule for datasample 10 consists of 551 atoms; the GVP model allocates 250 MB of GPU memory during inference and additionally stores 470 MB of gradients; our steerable model allocates 630 MB and stores 700 MB of gradients.
+
+The GVP model takes 1.7 seconds for 100 inferences when storing gradients and 1.3 s without.  Our steerable implementation takes respectively 0.52 seconds and 0.46 seconds.
+
+See the result for computational requirements in the notebook [latency and memory](./latency_and_memory.ipynb).
 
 ## 4. Conclusion
 <!-- Conclude -->
 
-
+Since the sMLP for LBA task with split 30 reaches their best model significantly faster than the GVP model, we suspect that the sMLP can extract information faster than the GVP. For the other task, similarly to the GVP, the model needed the extra epochs to find the best model, but it does it more efficiently and performs significantly better than the GVP. Even though training takes a longer time and needs more memory to do so, during inference the sMLP is about 2 to 3 times faster than the GVP. 
 
 
 ## 5. Contributions
 <!-- Close the notebook with a description of each student's contribution. -->
 Simon: provided taartjes
-
+Zjos: fix grammar
 Noa: cried

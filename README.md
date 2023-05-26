@@ -1,5 +1,5 @@
 ## Project Description
-[Jing et al., (2020)](https://arxiv.org/abs/2009.01411) proposed a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. This involves changing the multilayer perceptrons (MLPs) with geometric vector perceptrons (GVPs). The GVP approach is used to learn the relationship between protein sequences and their structures, operating on geometric objects rather than scalar values. In a follow-up paper by [Jing et al, (2021)](https://arxiv.org/abs/2106.03843), the authors extended the GVP-GNN architecture to handle atomic-level structure representations with vector gating, replacing the vector non-linearity. This retains the rotational equivariance of the vector features, but this version of the GVP can only exchange information from scalar vectors to type-1 vectors and vice versa, using the norm. This triggered us to figure out an approach to take away the weak point while maintaining the strength. 
+[Jing et al., 2020](https://arxiv.org/abs/2009.01411) proposed a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. This involves changing the multilayer perceptrons (MLPs) with geometric vector perceptrons (GVPs). The GVP approach is used to learn the relationship between protein sequences and their structures, operating on geometric objects rather than scalar values. In a follow-up paper by [Jing et al, 2021](https://arxiv.org/abs/2106.03843), the authors extended the GVP-GNN architecture to handle atomic-level structure representations with vector gating, replacing the vector non-linearity. This retains the rotational equivariance of the vector features, but this version of the GVP can only exchange information from scalar vectors to type-1 vectors and vice versa, using the norm. This triggered us to figure out an approach to take away the weak point while maintaining the strength. 
 
 ## Setting up the environment
 First create virtual environment with the correct python version. We name the env `gvp` here. Then install all the packages needed for the GVP.
@@ -87,8 +87,8 @@ Below we show short summary of the results obtained by the steerable MLP model, 
 | -------------         | ------------- |
 | GVP (original paper)  | 1.594 &#177; 0.073   | 
 | GVP (reproduced)      | 1.598 &#177; 0.020   |
-| sMLP                  | 1.540 &#177; 0.0688  |
-| sMLP (dense)          | 1.522 &#177; 0.0693  |
+| sMLP                  | 1.540 &#177; 0.070  |
+| sMLP (dense)          | 1.522 &#177; 0.069  |
 
 
 <!-- down &#8595; ->
