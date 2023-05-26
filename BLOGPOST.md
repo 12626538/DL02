@@ -136,7 +136,7 @@ From these results we conclude that the LBA task is close enough to the original
 
 This section is mostly extracted from _Geometric and Physical Quantities improve $E(3)$ Equivariant Message Passing_ [(Brandstetter et al., 2022)](https://doi.org/10.48550/arXiv.2110.02905).
 
-Steerable features are a type of vector that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\tilde{\boldsymbol{h}}$). The type of this vector indicates the type of information it holds, where (most commonly used in this work) type-$0$ are scalar features and type-$1$ are euclidean (XYZ) vectors. More general, a type-$l$ steerable feature is a $2l+1$-dimensional vector. These steerable features can be transformed using Wigner-D matrices, denoted by $\boldsymbol{D}(g)$.
+Steerable features are a type of vector that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\tilde{\boldsymbol{h}}$). The type of this vector indicates the type of information it holds, where (most commonly used in this work) type-$0$ are scalar features and type-$1$ are euclidean (XYZ) vectors. More general, a type-$l$ steerable feature is a $2l+1$-dimensional vector.
 
 Steerable MLP are a type of Multi-Layer Perceptrons that, just like regular MLPs, interleave linear mapping with non-linearities. Unlike regular MLP, steerable MLP make use of conditional weights, parameterized by a steerable vector $\tilde{\boldsymbol{a}}$. Given a steerable feature vector $\tilde{\boldsymbol{h}}^{(i)}$ at layer $i$, the updated feature vector at $i+1$ can be formalized as
 $$
@@ -220,7 +220,9 @@ $$
 \tilde{\boldsymbol{a}}^{(l_e)}_{ij} = \left( Y^{(l_e)}_m\left( \frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||} \right) \right)^T_{m=-l_e, \ldots, l_e}
 $$
 
-The full model consists of ... **TODO**
+As input of the model, it takes a graph with only the location and label of nodes. Edges are drawn between any two nodes less than some fixed distance apart, which also provides the one geoemtric vector for each edge. These are then split up in the steerable vectors of type $l_{e}$ using circular harmnoics and their norm. The label of each node is embedded into an $n_{embed}$ dimensional vector, which is equivalent to an $n_{embed}$-dimensional type-$0$ steerable feature vector.
+
+These node features are then put through several message passing layers, where each intermediate layer uses type $l_{hidden}$ representations, and the final layer has an ouput of type $l_{out}$. For regression tasks (such as in this work), $l_{out}=0$ and the final node embedding is some scalar feature vector of size $n_{out}$. If $n_{out}>1$, these features can be put through a regular MLP to post-process the representations. Finally, the features for each node are aggregated to give the final output.
 
 
 ### 3.4 Testing Equivariance
