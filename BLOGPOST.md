@@ -224,6 +224,53 @@ The full model consists of ... **TODO**
 In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method, used by the original authors, as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. Since the input of this model is represented using irreducible representations, each individual part needs to be rotated accordingly. So, after sampling a random 3D rotation matrix, it is transformed to do so. The remaining steps of testing equivariance is the same as described in [Section 1](#1-introduction).
 
 
+
+## Results
+
+<!-- GVP reproduction RSME different runs op LBA split=30
+    - run 1 : 1.577064037322998 
+    - run 2 : 1.616431474685669
+    - run 3 : 1.6020700931549072 
+    - mean: 1.5985218683879
+    - std: 0.019922128535226 -->
+
+<!-- GVP reproduction RSME different runs op LBA split=60
+    - run 1 : 1.5962501764297485 
+    - run 2 : 1.6832526922225952
+    - run 3 : 1.6436277627944946 
+    - mean: 1.6410435438156
+    - std: 0.043558788772982-->
+
+<!-- sMLP RSME different runs op LBA split=30
+    - run 1 : 1.5121526718139648 
+    - run 2 : 1.6194381713867188
+    - run 3 : 1.491175651550293
+    - mean: 1.540922164917
+    - std: 0.068801026872796 -->
+
+<!-- sMLP RSME different runs op LBA split=60
+    - run 1 : 1.3332748413085938
+    - run 2 : 1.3350021839141846  
+    - run 3 : 1.3006025552749634 
+    - mean: 1.3229598601659
+    - std: 0.019381247111821  -->
+
+<!-- sMLP DENSE RSME different runs op LBA split=30
+    - run 1 : 1.5981481075286865 
+    - run 2 : 1.505611777305603     
+    - run 3 : 1.462575078010559 
+    - mean: 1.5221116542816
+    -std: 0.069276229966334 -->
+
+<!-- sMLP DENSE RSME different runs op LBA split=60
+    - run 1 : 1.3841136693954468  
+    - run 2 : 1.3234361410140991
+    - run 3 : 1.2702085971832275 
+    - mean: 1.3259194691976
+    - std: 0.056993127288015    -->
+
+
+
 ## 4. Conclusion
 <!-- Conclude -->
 
