@@ -2,13 +2,16 @@
 [Jing et al., 2020](https://arxiv.org/abs/2009.01411) proposed a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. This involves changing the multilayer perceptrons (MLPs) with geometric vector perceptrons (GVPs). The GVP approach is used to learn the relationship between protein sequences and their structures, operating on geometric objects rather than scalar values. In a follow-up paper by [Jing et al, 2021](https://arxiv.org/abs/2106.03843), the authors extended the GVP-GNN architecture to handle atomic-level structure representations with vector gating, replacing the vector non-linearity. This retains the rotational equivariance of the vector features, but this version of the GVP can only exchange information from scalar vectors to type-1 vectors and vice versa, using the norm. This triggered us to figure out an approach to take away the weak point while maintaining the strength. 
 
 ## Setting up the environment
-First create virtual environment with the correct python version. We name the env `gvp` here. Then install all the packages needed for the GVP.
-Might need to change the building wheel in order to install the files. For this navigate to https://data.pyg.org/whl/ and find the correct link.
+First create virtual environment with the correct python version. We name the env `gvp` here. Then install all the packages needed for the experiments.
+It might be needed to change the building wheel in order to install the files. For this navigate to https://data.pyg.org/whl/ and find the correct link corresponding to you CUDA-version and OS.
 ```bash
 conda create -n gvp python==3.11.3 pip
 conda activate gvp
 pip install torch==2.0.0 # required install before the packages
-pip install -r requirements.txt
+pip install -r requirements.txt # adjust the wheels with accurate cuda version
+
+# developing the gvp package wihtin the folder (from original authors):
+cd gvp && python setup.py develop # required for importing gvp module
 ```
 
 ## Downloading the data
@@ -23,7 +26,10 @@ The datasets for each task are found by navigating to <https://www.atom3d.ai/> a
 |        ├── raw
 |        └── splits
 |            └── split-by-cath-topology
-└── models
+├── demos
+├── src
+└── etc.
+
 ```
 The files within the split folder for the tasks are as follows:
 ```
@@ -37,10 +43,10 @@ The files within the split folder for the tasks are as follows:
 * RSR: candidates-by-split-by-time
 * SMP: random
 ```
-Note an additional empty folder 'models' is created in the same directory to allow for saving the model checkpoints during training.
+When running the experiments, note an additional folder 'reproduced_models' or 'sMLP_models' is created (corresponding with the experiment) in the same folder to allow for saving the model checkpoints during training. Another folder named 'runs' is created to monitor the training process with tensorboard.
 
 ## Training the models with the GVP model
-The models can be trained by specifying the task and additional arguments as follows:
+The models can be trained by running the 'run_atom3d.py' in the src folder and specifying the task and additional arguments as follows:
 ```
 python run_atom3d.py <TASK> <Additional arguments>
 ```
@@ -60,13 +66,13 @@ To reproduce the original tasks the code was run with default paramaters where t
 python run_atom3d.py --test model/<checkpoint> <Additional arguments>
 ```
 
-This returns the task-specific result metrics, which will are reported and discussed in the following [blogpost](./BLOGPOST.md). These results can also be obtained from the model checkpoints with the help of the [demo-notebook](./demo.ipynb).
+This returns the task-specific result metrics, which will are reported and discussed in the following [blogpost](./BLOGPOST.md). These results can also be obtained from the model checkpoints with the help of a [notebook](./demos/obtaining_metrics.ipynb).
 
 ## Extending with Steerable MLPs
 TODO explain a bit about the extension and how it differs (compact version of the text in the blogpost.md)
 
 ## Training on ATOM3d with the extended models
-The training of the extended model is similar to the GVP model. The following file can be used by specifying the task and additional arguments as follows:
+The training of the extended model is similar to the GVP model. The following file, located in 'src', can be used by specifying the task and additional arguments as follows:
 ```
 python run_sMLP.py <TASK> <Additional arguments>
 ```
@@ -77,11 +83,10 @@ These additional arguments again include the task-specifics arguments for `LBA` 
 * --hidden-dim 
 * --depth
 ```
-Then ...
+Then ... TODO: elaborate on these args.
 
 ## Steerable MLP results
 Below we show short summary of the results obtained by the steerable MLP model, focused on the LBA (split 30 shown) task. 
-<!--  report improvement in metrics (as reported in the original paper) arrows indicate whether higher or lower is considered 'beter' (or if they're all better when lower we can inidcate whether there was an improvement next to the result) -->
 
 |                       | RMSE &#8595;  |
 | -------------         | ------------- |
@@ -90,9 +95,8 @@ Below we show short summary of the results obtained by the steerable MLP model, 
 | sMLP                  | 1.540 &#177; 0.070  |
 | sMLP (dense)          | 1.522 &#177; 0.069  |
 
-
-<!-- down &#8595; ->
-<!-- up &#8593; -->
+<!-- down-arrow &#8595; ->
+<!-- up-arrow &#8593; -->
 
 ## Deep Learning 2
 This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam
@@ -103,5 +107,5 @@ As of may 14 2023 the project plan has been completed as follows:
 - [x] Recreate the original papers results
 - [x] Report on the reproduced results
 - [x] Implement our proposed expansion 
-- [ ] Report on the results with expansion
+- [x] Report on the results with expansion
 - [ ] Finish final deliverables and present on June 1st 2023

@@ -5,7 +5,7 @@
 #SBATCH --partition=gpu_titanrtx_shared_course
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
-#SBATCH --time=00:03:00
+#SBATCH --time=00:10:00
 #SBATCH --mem=32000M
 #SBATCH --output=job_logs/slurm_output_run_notebook_%A.out
 
@@ -18,7 +18,7 @@ source activate gvp
 
 # Run notebook through command line
 jupyter nbconvert \
-    "DL02/latency and memory.ipynb" \
+    "DL02/demos/latency_and_memory.ipynb" \
     --to notebook \
     --execute \
     --inplace \

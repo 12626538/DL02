@@ -39,7 +39,7 @@ def parse_args():
                         help='learning rate')
     parser.add_argument('--load', metavar='PATH', default=None,
                         help='initialize first 2 GNN layers with pretrained weights')
-    parser.add_argument('--save', metavar='DIR', default='models',
+    parser.add_argument('--save', metavar='DIR', default='reproduced_models/',
                         help='directory to save models to')
     parser.add_argument('--data', metavar='DIR', default='atom3d-data/',
                         help='directory to data')
@@ -83,6 +83,10 @@ def setup():
     if args.test == None:
         print("Device:",device)
     model_id = float(time.time())
+
+    PATH = args.save
+    if not os.path.exists(PATH):
+        os.makedirs(PATH)
 
 def main():
     datasets = get_datasets(args.task, args.data, args.lba_split)
@@ -254,7 +258,7 @@ def get_metrics(task):
         'RES' : {'accuracy': metrics.accuracy},
         'MSP' : {'auroc': metrics.auroc, 'auprc': metrics.auprc},
         'LEP' : {'auroc': metrics.auroc, 'auprc': metrics.auprc},
-        'LBA' : {**correlations, 'rmse': partial(sk_metrics.mean_squared_error, squared=False)},
+        'LBA' : {'rmse': partial(sk_metrics.mean_squared_error, squared=False)}, #left-out: **correlations
         'SMP' : {'mae': sk_metrics.mean_absolute_error}
     }[task]
 

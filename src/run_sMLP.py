@@ -41,7 +41,7 @@ parser.add_argument('--dense', action='store_true',
 args = parser.parse_args()
 
 # For logging during the training process
-import time
+import time, os
 from lightning.pytorch.loggers import TensorBoardLogger
 from lightning.pytorch.callbacks import ModelCheckpoint
 
@@ -53,6 +53,10 @@ from e3nn.o3 import Irreps
 import torch_geometric as tg
 import lightning.pytorch as lp
 from steerable_mlp import ConvModel, Atom3D
+
+PATH = args.modeldir
+if not os.path.exists(PATH):
+    os.makedirs(PATH)
 
 def balanced_irreps(hidden_features:int, lmax:int) -> Irreps:
     """Divide subspaces equally over the feature budget"""

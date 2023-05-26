@@ -9,7 +9,7 @@ from e3nn import o3  # needed for convolution class
 from e3nn.nn import Gate  # needed for ConvLayer SE3 class
 from e3nn.o3 import Irreps  # needed for balanced irreps function
 
-import atom3dutils
+# import atom3dutils
 
 def compute_gate_irreps(irreps_out):
     """Compute irreps_scalars, irreps"""

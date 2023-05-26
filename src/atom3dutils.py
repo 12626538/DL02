@@ -69,7 +69,7 @@ def _edge_features(coords, edge_index, D_max=4.5, num_rbf=16, device='cpu'):
 
     return edge_s, edge_v
 
-def get_datasets(task, data_dir='/media/jip/T7/DL02/data/', lba_split=None, smp_idx=None):
+def get_datasets(task, data_dir='../atom3d-data/', lba_split=None, smp_idx=None):
     assert task in {'PPI','RSR','PSR','MSP','LEP','LBA','SMP'}, f"Unknown task {task}"
     assert task!='SMP' or smp_idx in range(20), "Set SMP index (range 0-19) when running SMP task"
     assert task!='LBA' or lba_split in {30,60}, "Set LBA split (30,60) when running LBA task"
