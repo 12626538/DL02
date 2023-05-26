@@ -27,7 +27,7 @@ To address this issue, Jing et al. (2021) propose vector gating as a way to prop
 Lastly, as mentioned, the equivariance to rotation of the models is very important and in order to test this property, the original authors have tested the GVP to check if the models behave the same when the conditions are rotated randomly. We can summarize this behaviour into two points, namely:
 
 1. Scalars are invariant to rotations, so the output scalar features should be be the same if the vector features of the input nodes are rotated;
-2. The vector features are equivariant to rotations, so if the input is rotated, the output should be close to rotating the original output. 
+2. The vector features are equivariant to rotations, so if the input is rotated, the output should be close to rotating the original output.
 <!-- Equivariant message-passing seeks to incorporate the equivariant representations of ENNs within the message-passing framework of GNNs instead of indirectly encoding the 3D geometry in terms of pairwise distances, angles, and other scalar features. <----- this is a sentence from the 2021 paper -->
 
 <p align="center">
@@ -70,7 +70,7 @@ Additionally, if the rows of $\boldsymbol{V}$ are rotated *individually* using m
 
 $$\begin{equation}
 \lVert{\boldsymbol{W}_h \boldsymbol{V}'}\rVert_2 = \begin{bmatrix} \lVert{\boldsymbol{W}_h \boldsymbol{v}_1^T \boldsymbol{U}_1}\rVert_2 \\\\ \vdots \\\\ \lVert{\boldsymbol{W}_h \boldsymbol{v}_n^T \boldsymbol{U}_n}\rVert_2 \end{bmatrix} = \begin{bmatrix}\lVert{\boldsymbol{W}_h \boldsymbol{v}_1^T}\rVert_2 \\\\ \vdots \\\\ \lVert{\boldsymbol{W}_h \boldsymbol{v}_n^T}\rVert_2 \end{bmatrix} = \lVert{\boldsymbol{W}_h \boldsymbol{V}}\rVert_2.
-\end{equation}$$ 
+\end{equation}$$
 -->
 
 
@@ -111,18 +111,18 @@ The authors of the original paper use eight tasks to test the quality of their m
 Since the code of the paper was given to us, it was relatively easy to reproduce the results of the original paper. We reproduced all the tasks that our cluster could handle. Once we had all the results, we could build upon a task that was correctly reproduced. We only use tasks that are close to the original papers because only these task can give a clear and correct indication if our contribution improves the model.
 
 Our results were as follows:
-| Task                    | Metric        | Jing et al. | Ours    |
-|-------------------------|---------------|-----------|-----------|
-| LBA (Split 30)          | RMSE &#8595;         | **1.594** | **1.598** |
-| LBA (Split 60)          | RMSE &#8595;         | **1.594** | **1.641** |
-| SMP $\mu[D]$            | MAE   &#8595;        | 0.049     | 0.144     |
-| SMP $\sigma_{gap} [eV]$ | MAE   &#8595;        | 0.065     | 0.0058    |
-| SMP $U^{at}_0 [eV]$     | MAE   &#8595;        | 0.143     | 0.0259    |
-| MSP                     | AUROC       &#8593;  | **0.680** | **0.672** |
-| PSR                     | global $R_s$ &#8593; | **0.845** | **0.854** |  <!--Reproduced, right, but @Jip didn't comment on it-->
-| PSR                     | mean $R_s$  &#8593;  | 0.511     | 0.602     |
-| RSR                     | global $R_s$ &#8593; | **0.330** | **0.331** |
-| RSR                     | mean $R_s$  &#8593;  | 0.221     | 0.018     |
+| Task                    | Metric               | Jing et al. | Ours      |
+|-------------------------|----------------------|-------------|-----------|
+| LBA (Split 30)          | RMSE &#8595;         | **1.594**   | **1.598** |
+| LBA (Split 60)          | RMSE &#8595;         | **1.594**   | **1.641** |
+| SMP $\mu[D]$            | MAE   &#8595;        |   0.049     |   0.144   |
+| SMP $\sigma_{gap} [eV]$ | MAE   &#8595;        |   0.065     |   0.0058  |
+| SMP $U^{at}_0 [eV]$     | MAE   &#8595;        |   0.143     |   0.0259  |
+| MSP                     | AUROC       &#8593;  | **0.680**   | **0.672** |
+| PSR                     | global $R_s$ &#8593; | **0.845**   | **0.854** |
+| PSR                     | mean $R_s$  &#8593;  |   0.511     |   0.602   |
+| RSR                     | global $R_s$ &#8593; | **0.330**   | **0.331** |
+| RSR                     | mean $R_s$  &#8593;  |   0.221     |   0.018   |
 
 <!-- down &#8595; ->
 <!-- up &#8593; -->
@@ -132,16 +132,94 @@ From these results we conclude that the LBA task is close enough to the original
 ### 3.3 Steerable MLP
 <!-- Jip schrijft hier nog wat meer met steerable -->
 
-<!--
-ChatGPT stuff on the explanation of steerable graph convolutions
-In a steerable graph convolution, the filters are defined in a way that they can be rotated to any direction in the graph, by using a steering matrix. The steering matrix is a set of complex-valued coefficients that are learned during training, and it encodes the rotation of the filters in the spectral domain of the graph Laplacian matrix.
+This section is mostly extracted from _Geometric and Physical Quantities improve $E(3)$ Equivariant Message Passing_ (Brandstetter et al., 2022).
 
-The spectral domain of the graph Laplacian matrix consists of its eigenvalues and eigenvectors. The eigenvectors represent the basis functions of the graph, while the eigenvalues correspond to the frequencies of the functions. By multiplying the filter with the steering matrix in the spectral domain, the filter is rotated to the desired direction in the graph.
+Steerable features are a type of vector that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\tilde{\boldsymbol{h}}$). The type of this vector indicates the type of information it holds, where (most commonly used in this work) type-$0$ are scalar features and type-$1$ are euclidean (XYZ) vectors. More general, a type-$l$ steerable feature is a $2l+1$-dimensional vector. These steerable features can be transformed using Wigner-D matrices, denoted by $\boldsymbol{D}(g)$.
 
-The steerable graph convolutional operation can be represented as:
+Steerable MLP are a type of Multi-Layer Perceptrons that, just like regular MLPs, interleave linear mapping with non-linearities. Unlike regular MLP, steerable MLP make use of conditional weights, paramaterized by a steerable vector $\tilde{\boldsymbol{a}}$. Given a steerable feature vector $\tilde{\boldsymbol{h}}^{(i)}$ at layer $i$, the updated feature vector at $i+1$ can be formalized as
+$$
+\tilde{\boldsymbol{h}}^{(i+1)} = \boldsymbol{W}^{(i)}_{\boldsymbol{\tilde{a}}}\ \tilde{\boldsymbol{h}}^{(i)}
+$$
 
-Overall, steerable graph convolutions offer a flexible and efficient way to perform graph convolutional operations in any direction, making them suitable for a wide range of graph-based machine learning tasks.
- -->
+In geometric graph neural networks, geometric information can be encoded in the edge features between two nodes. Let $\boldsymbol{x}_i,\boldsymbol{x}_j$ be the euclidean coordinates of two nodes in $\mathbb{R}^3$, a (translation invariant) edge feature can be defined as $\boldsymbol{e}_{ij} = \boldsymbol{x}_j  - \boldsymbol{x}_i$. The corresponding type-$l$ steerable edge feature $\tilde{\boldsymbol{a}}$ can now be defined using the *spherical harmonics* $Y^{(l)}_m: S^2 \rightarrow \mathbb{R}$ at $\frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||}$
+$$
+\tilde{\boldsymbol{a}}^{(l)} = \left( Y^{(l)}_m\left( \frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||} \right) \right)^T_{m=-l, \ldots, l}
+$$
+
+Using two steerable features $\tilde{\boldsymbol{h}}^{(l_1)},\tilde{\boldsymbol{h}}^{(l_2)}$ of type-$l_1$ and -$l_2$, the Clebsch-Gordan (CG) tensor product $\otimes_{cg}$ can be used to obtain a new type-$l$ steerable vector $\tilde{\boldsymbol{h}}^{(l)}$ and can furthermore be parameterized by learnable weights $\boldsymbol{W}$:
+$$
+(
+  \tilde{\boldsymbol{h}}^{(l_1)}
+  \otimes^{\boldsymbol{W}}_{cg}
+  \tilde{\boldsymbol{h}}^{(l_2)}
+)_m^{(l)} =
+w_m
+\sum_{m_1=-l_1}^{l_1}
+\sum_{m_2=-l_2}^{l_2}
+  C_{(l_1,m_1),(l_2,m_2)}^{(l,m)}
+  h^{(l_1)}_{m_1} h^{(l_2)}_{m_2}
+$$
+where $C$ are the CG coefficients that assure the resulting vector is type-$l$ steerable.
+
+This can be used to define a linear mapping between steerable features, which can be used in steerable MLPs. Since $\tilde{\boldsymbol{a}}$ is based on the spherical harmonics of the _normalized_ edge feature $\boldsymbol{e}_{ij} /|| \boldsymbol{e}_{ij} ||$, this norm $d=|| \boldsymbol{e}_{ij} ||$ can be re-introduced in the learnable weights $\boldsymbol{W}(d)$, which gives the final linear mapping:
+$$
+\boldsymbol{W}_{\boldsymbol{\tilde{a}}}(d)\ \tilde{\boldsymbol{h}}
+:=
+\tilde{\boldsymbol{h}}
+\otimes^{\boldsymbol{W}(d)}_{cg}
+\tilde{\boldsymbol{a}}
+$$
+
+The second part of (steerable) MLPs are the activation functions, which introduce the non-linearity. Currently available activation functions include Fourier-based (Cohen et al., 2018), norm-altering (Thomas et al., 2018), or gated non-linearities (Weiler et al., 2018) (Brandstetter et al., 2022).
+
+Message passing networks on steerable features at node $i$ with neighbours $\mathcal{N}(i)$ can be summarized as some nonlinearity $\phi$ on the steerable feature $\tilde{\boldsymbol{h}}^{(l)}_i$ and some aggregated message $\tilde{\boldsymbol{m}}^{(l)}_i$. A message $\tilde{\boldsymbol{m}}_{ij}$, in turn, is defined as a nonlinearity $\psi$ between the neighbouring steerable features $\tilde{\boldsymbol{h}}^{(l)}_j$ and the corresponding edge feature $\boldsymbol{e}_{ij}$.
+$$
+\tilde{\boldsymbol{h}}^{(l_{out})}_i =
+\phi\left(
+  \tilde{\boldsymbol{h}}^{(l_n)}_i,\
+  \tilde{\boldsymbol{m}}^{(l_m)}_i
+\right)
+\hspace{2cm}
+\tilde{\boldsymbol{m}}^{(l_m)}_i =
+\frac1{|\mathcal{N}(i)|}
+\sum_{j \in \mathcal{N}(i)}\
+    \tilde{\boldsymbol{m}}^{(l_m)}_{ij}
+\hspace{2cm}
+\tilde{\boldsymbol{m}}^{(l_m)}_{ij}
+= \psi\left(
+      \tilde{\boldsymbol{h}}^{(l_1)}_j,
+      \boldsymbol{e}_{ij}
+    \right)
+$$
+
+
+#### Our implementation
+As input, $\tilde{\boldsymbol{h}}^{(l_n)}_i$ are steerable node features of type $l_n$, the edge feature $\boldsymbol{e}_{ij}$ with L2-norm $|| \boldsymbol{e}_{ij} ||$ gives steerable feature $\tilde{\boldsymbol{a}}^{(l_e)}_{ij}$ of type $l_e$. Output are features $\tilde{\boldsymbol{h}}^{(l_{out})}_i$ of type $l_{out}$.
+
+Updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $l_m$) are therefore already of type $l_{out}$.
+$$
+\tilde{\boldsymbol{h}}^{(l_{out})}_i
+:= \tilde{\boldsymbol{m}}^{(l_m)}_i
+$$
+
+A message is defined as a single-layer perceptron making use of the CG tensor product as linear mapping parameterized by the edge feature $\boldsymbol{e}_{ij}$, and a gated nonlinearity $\sigma$
+$$
+\tilde{\boldsymbol{m}}^{(l_m)}_{ij}
+:=
+\sigma\left(
+  \tilde{\boldsymbol{h}}^{(l_n)}_j
+  \otimes^{\boldsymbol{W}(|| \boldsymbol{e}_{ij} ||)}_{cg}
+  \tilde{\boldsymbol{a}}^{(l_e)}_{ij}
+\right)
+\qquad
+\text{where}
+\quad
+\tilde{\boldsymbol{a}}^{(l_e)}_{ij} = \left( Y^{(l_e)}_m\left( \frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||} \right) \right)^T_{m=-l_e, \ldots, l_e}
+$$
+
+The full model consists of ... **TODO**
+
+
 ### 3.4 Testing Equivariance
 In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method, used by the original authors, as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. Since the input of this model is represented using irreducible representations, each individual part needs to be rotated accordingly. So, after sampling a random 3D rotation matrix, it is transformed to do so. The remaining steps of testing equivariance is the same as described in [Section 1](#1-introduction).
 
@@ -157,4 +235,3 @@ In order to verify if our implementation of the steerable MLP is equivariant to 
 Simon: provided taartjes
 
 Noa: cried
-
