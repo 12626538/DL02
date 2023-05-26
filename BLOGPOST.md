@@ -233,21 +233,21 @@ In order to verify if our implementation of the steerable MLP is equivariant to 
 
 ## Results
 <!-- GVP reproduction RSME different runs op LBA split=30
-    - run 1 : 1.577064037322998 
+    - run 1 : 1.577064037322998
     - run 2 : 1.616431474685669
-    - run 3 : 1.6020700931549072 
+    - run 3 : 1.6020700931549072
     - mean: 1.5985218683879
     - std: 0.019922128535226 -->
 
 <!-- GVP reproduction RSME different runs op LBA split=60
-    - run 1 : 1.5962501764297485 
+    - run 1 : 1.5962501764297485
     - run 2 : 1.6832526922225952
-    - run 3 : 1.6436277627944946 
+    - run 3 : 1.6436277627944946
     - mean: 1.6410435438156
     - std: 0.043558788772982-->
 
 <!-- sMLP RSME different runs op LBA split=30
-    - run 1 : 1.5121526718139648 
+    - run 1 : 1.5121526718139648
     - run 2 : 1.6194381713867188
     - run 3 : 1.491175651550293
     - mean: 1.540922164917
@@ -255,33 +255,33 @@ In order to verify if our implementation of the steerable MLP is equivariant to 
 
 <!-- sMLP RSME different runs op LBA split=60
     - run 1 : 1.3332748413085938
-    - run 2 : 1.3350021839141846  
-    - run 3 : 1.3006025552749634 
+    - run 2 : 1.3350021839141846
+    - run 3 : 1.3006025552749634
     - mean: 1.3229598601659
     - std: 0.019381247111821  -->
 
 <!-- sMLP DENSE RSME different runs op LBA split=30
-    - run 1 : 1.5981481075286865 
-    - run 2 : 1.505611777305603     
-    - run 3 : 1.462575078010559 
+    - run 1 : 1.5981481075286865
+    - run 2 : 1.505611777305603
+    - run 3 : 1.462575078010559
     - mean: 1.5221116542816
     -std: 0.069276229966334 -->
 
 <!-- sMLP DENSE RSME different runs op LBA split=60
-    - run 1 : 1.3841136693954468  
+    - run 1 : 1.3841136693954468
     - run 2 : 1.3234361410140991
-    - run 3 : 1.2702085971832275 
+    - run 3 : 1.2702085971832275
     - mean: 1.3259194691976
     - std: 0.056993127288015    -->
 
-In this section we compare the results of Jing et al. to our reproduction and to the results of our implementation of a steerable MLP (sMLP), with and without dense layers, for both splits of the LBA task. 
+In this section we compare the results of Jing et al. to our reproduction and to the results of our implementation of a steerable MLP (sMLP), with and without dense layers, for both splits of the LBA task.
 
-| Task                    | Metric               | Jing et al. |     Reproduction     |  sMLP                | sMLP DENSE            |
-|-------------------------|----------------------|-------------|----------------------|----------------------|-----------------------|
-| LBA (Split 30)          | RMSE &#8595;         | 1.594       | 1.599 &#177;  0.020  |  1.541 &#177; 0.069  |  1.522 &#177; 0.070   |
-| LBA (Split 60)          | RMSE &#8595;         | -           | 1.641 &#177;  0.044  |  1.323 &#177; 0.019  |  1.326 &#177; 0.057   |
+| Task                    | Metric               | Jing et al.          |     Reproduction     |  sMLP                | sMLP DENSE            |
+|-------------------------|----------------------|----------------------|----------------------|----------------------|-----------------------|
+| LBA (Split 30)          | RMSE &#8595;         | 1.594 &#177;  0.073  | 1.599 &#177;  0.020  |  1.541 &#177; 0.069  |  1.522 &#177; 0.070   |
+| LBA (Split 60)          | RMSE &#8595;         | -                    | 1.641 &#177;  0.044  |  1.323 &#177; 0.019  |  1.326 &#177; 0.057   |
 
-This table shows that the sMLP, with and without dense layer, outperforms the original and the reproduced results for the LBA task with split 30. The sMLP also significantly outperforms the reproduction of the GVP model for the LBA task with split 60. 
+This table shows that the sMLP, with and without dense layer, outperforms the original and the reproduced results for the LBA task with split 30. The sMLP also significantly outperforms the reproduction of the GVP model for the LBA task with split 60.
 
 For both tasks, the reproducing took on average 1.5 hours with a batch size of 8, whilst the sMLP (with and without dense layers) took on average 3 hours with a batch size of 1. The decrease of batch size was the consequence of the sMLP needing more memory during training than the GVP and not having enough memory on the GPU otherwise.
 
@@ -297,7 +297,7 @@ See the result for computational requirements in the notebook [latency and memor
 ## 4. Conclusion
 <!-- Conclude -->
 
-Since the sMLP for LBA task with split 30 reaches their best model significantly faster than the GVP model, we suspect that the sMLP can extract information faster than the GVP. For the other task, similarly to the GVP, the model needed the extra epochs to find the best model, but it does it more efficiently and performs significantly better than the GVP. Even though training takes a longer time and needs more memory to do so, during inference the sMLP is about 2 to 3 times faster than the GVP. 
+Since the sMLP for LBA task with split 30 reaches their best model significantly faster than the GVP model, we suspect that the sMLP can extract information faster than the GVP. For the other task, similarly to the GVP, the model needed the extra epochs to find the best model, but it does it more efficiently and performs significantly better than the GVP. Even though training takes a longer time and needs more memory to do so, during inference the sMLP is about 2 to 3 times faster than the GVP.
 
 
 ## 5. Contributions
