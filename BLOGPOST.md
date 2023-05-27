@@ -101,8 +101,6 @@ From these results we conclude that the LBA task is close enough to the original
 
 ### 3.3. Steerable MLP
 
-### 3.3 Steerable MLP
-
 This section is mostly based on the paper “*Geometric and Physical Quantities improve* $E(3)$ *Equivariant Message Passing*” ([Brandstetter et al., 2022](https://doi.org/10.48550/arXiv.2110.02905)).
 
 Steerable features are vectors that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\boldsymbol{\tilde h}$). The type of this vector indicates the type of information it holds, where the relevant features for this work are type- $0$, scalar features, and type- $1$, 3D euclidean vectors (with $x$, $y$ and $z$ components). More general, a type- $l$ steerable feature is a $2l+1$-dimensional vector.
