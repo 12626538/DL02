@@ -74,7 +74,7 @@ $$\begin{equation}
 -->
 
 
-## 3. Our Contribution 
+## 3. Our Contribution
 
 <!-- Describe your novel contribution. -->
 We aim to improve performance of the GVP layers by no longer requiring the scalar features to be independent of the orientation of the geometric features. In the GVP layers, by taking the norm of the geometric features, important information of the orientation is lost. For the Atom3D tasks used for evaluation, a model is used that only takes the output scalar features of all nodes, and therefore does not take orientation into account explicitly. This limits the expressiveness of the model.
@@ -274,7 +274,7 @@ In order to verify if our implementation of the steerable MLP is equivariant to 
     - mean: 1.3259194691976
     - std: 0.056993127288015    -->
 
-In this section we compare the results of Jing et al. to our reproduction and to the results of our implementation of a steerable MLP (sMLP), with and without dense layers, for both splits of the LBA task. Each task was run 3 times and the obtained metrics were averaged. 
+In this section we compare the results of Jing et al. to our reproduction and to the results of our implementation of a steerable MLP (sMLP), with and without dense layers, for both splits of the LBA task. Each task was run 3 times and the obtained metrics were averaged.
 
 | Task                    | Metric               | Jing et al.          |     Reproduction     |  sMLP                | sMLP DENSE            |
 |-------------------------|----------------------|----------------------|----------------------|----------------------|-----------------------|
@@ -297,7 +297,7 @@ See the result for computational requirements in the notebook [latency and memor
 ## 4. Conclusion
 <!-- Conclude -->
 
-Since the sMLP for LBA task with split 30 reaches their best model significantly faster than the GVP model, we suspect that the sMLP can extract information faster than the GVP. For the other task, similarly to the GVP, the model needed the extra epochs to find the best model, but it does it more efficiently and performs significantly better than the GVP. Even though training takes a longer time and needs more memory to do so, during inference the sMLP is about 2 to 3 times faster than the GVP. 
+Since the sMLP for LBA task with split 30 reaches their best model significantly faster than the GVP model, we suspect that the sMLP can extract information faster than the GVP. For the other task, similarly to the GVP, the model needed the extra epochs to find the best model, but it does it more efficiently and performs significantly better than the GVP. Even though training takes a longer time and needs more memory to do so, during inference the sMLP is about 2 to 3 times faster than the GVP.
 
 <!-- oops dit staat er vgm al in?  Although the original authors did not report results on the LBA split 60, we were able to use their implementation to obtain the GVPs results on this subtask. Based on the improvement of results, (we can support)/(this showed that our sMLP variant) *do be better at using the information* ? -->
 
@@ -305,5 +305,11 @@ Since the sMLP for LBA task with split 30 reaches their best model significantly
 ## 5. Contributions
 <!-- Close the notebook with a description of each student's contribution. -->
 Moet hier de contribution van je personal essay?
+
+<!-- Jip: My contribution to this project has been mostly in writing the core of the steerable model. In the first few weeks, I focussed writing some job files for the LISA cluster to reproduce the original paper. From there, my teammates were able to run all tasks covered in the GVP paper, and combine everything into the first research proposal and draft version of the final mini-project.
+
+In the meantime, I started on the steerable model by taking the third tutorial (on graph neural networks) and slowly rewriting everything to our specific datasets. This consisted of adding comments and making small changes to let our model run on the Atom3D dataset. I was also able to use some code from the GVP paper as utility functions for this. Once the rough set-up of the model was there, I did not have access to a GPU to test the model performance (LISA was down at the time), so I continued finetuning and debugging the model with one teammate who had acces to a personal GPU.
+
+Finally, I wrote the section on steerability in the final report, which is a more elaborate version of the Steerable Message Passing section above. -->
 
 <!-- Zjos: As noted in the plan proposal my main contribution has been executing the experiments and monitoring these. During this I also have debugged a lot of the code and kept the team updated on our results, indicating whether our methods worked and we were making actual progress. At the start of the project there were issues with setting up the environment to reproduce the experiments of the original paper, on which I spend some time to fix it. The README has also been assigned to me to be kept updated throughout the project. In the end I have also taken on the responsibility to restructure our repository to match the preferred structure as shown on Canvas. - Overall I have been very active within my team to make sure I was contributing in a way they agreed with. - I hope y'all agree lol -->
