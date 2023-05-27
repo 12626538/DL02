@@ -126,20 +126,22 @@ From these results we conclude that the LBA task is close enough to the original
 
 This section is mostly extracted from _Geometric and Physical Quantities improve_ $E(3)$ _Equivariant Message Passing_ ([Brandstetter et al., 2022](https://doi.org/10.48550/arXiv.2110.02905)).
 
-Steerable features are a type of vector that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\tilde{\boldsymbol{h}}$). The type of this vector indicates the type of information it holds, where (most commonly used in this work) type-$`0`$ are scalar features and type-$`1`$ are euclidean (XYZ) vectors. More general, a type-$`l`$ steerable feature is a $2l+1$-dimensional vector.
+Steerable features are a type of vector that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\tilde{\boldsymbol{h}}$). The type of this vector indicates the type of information it holds, where (most commonly used in this work) type- $0$ are scalar features and type- $1$ are euclidean (XYZ) vectors. More general, a type- $l$ steerable feature is a $2l+1$-dimensional vector.
 
 Steerable MLP are a type of Multi-Layer Perceptrons that, just like regular MLPs, interleave linear mapping with non-linearities. Unlike regular MLP, steerable MLP make use of conditional weights, parameterized by a steerable vector $\tilde{\boldsymbol{a}}$. Given a steerable feature vector $\tilde{\boldsymbol{h}}^{(i)}$ at layer $i$, the updated feature vector at $i+1$ can be formalized as
-```math
+
+$$\begin{equation}
 \tilde{\boldsymbol{h}}^{(i+1)} = \boldsymbol{W}^{(i)}_{\boldsymbol{\tilde{a}}}\ \tilde{\boldsymbol{h}}^{(i)}
-```
+\end{equation}$$
 
-In geometric graph neural networks, geometric information can be encoded in the edge features between two nodes. Let $`\boldsymbol{x}_i,\boldsymbol{x}_j`$ be the euclidean coordinates of two nodes in $`\mathbb{R}^3`$, a (translation invariant) edge feature can be defined as $`\boldsymbol{e}_{ij} = \boldsymbol{x}_j  - \boldsymbol{x}_i`$. The corresponding type-$`l`$ steerable edge feature $`\tilde{\boldsymbol{a}}`$ can now be defined using the *spherical harmonics* $`Y^{(l)}_m: S^2 \rightarrow \mathbb{R}`$ at $`\frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||}`$
-```math
+
+In geometric graph neural networks, geometric information can be encoded in the edge features between two nodes. Let $\boldsymbol{x}_i,\boldsymbol{x}_j$ be the euclidean coordinates of two nodes in $\mathbb{R}^3$, a (translation invariant) edge feature can be defined as $\boldsymbol{e}_{ij} = \boldsymbol{x}_j  - \boldsymbol{x}_i$. The corresponding type- $l$ steerable edge feature $\tilde{\boldsymbol{a}}$ can now be defined using the *spherical harmonics* $Y^{(l)}_m: S^2 \rightarrow \mathbb{R}$ at $\frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||}$
+$$\begin{equation}
 \tilde{\boldsymbol{a}}^{(l)} = \left( Y^{(l)}_m\left( \frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||} \right) \right)^T_{m=-l, \ldots, l}
-```
+\end{equation}$$
 
-Using two steerable features $`\tilde{\boldsymbol{h}}^{(l_1)},\tilde{\boldsymbol{h}}^{(l_2)}`$ of type-$`l_1`$ and -$`l_2`$, the Clebsch-Gordan (CG) tensor product $`\otimes_{cg}`$ can be used to obtain a new type-$`l`$ steerable vector $`\tilde{\boldsymbol{h}}^{(l)}`$ and can furthermore be parameterized by learnable weights $`\boldsymbol{W}`$:
-```math
+Using two steerable features $\tilde{\boldsymbol{h}}^{(l_1)},\tilde{\boldsymbol{h}}^{(l_2)}$ of type- $l_1$ and - $l_2$, the Clebsch-Gordan (CG) tensor product $\otimes_{cg}$ can be used to obtain a new type- $l$ steerable vector $\tilde{\boldsymbol{h}}^{(l)}$ and can furthermore be parameterized by learnable weights $\boldsymbol{W}$:
+$$\begin{equation}
 (
   \tilde{\boldsymbol{h}}^{(l_1)}
   \otimes^{\boldsymbol{W}}_{cg}
@@ -150,22 +152,22 @@ w_m
 \sum_{m_2=-l_2}^{l_2}
   C_{(l_1,m_1),(l_2,m_2)}^{(l,m)}
   h^{(l_1)}_{m_1} h^{(l_2)}_{m_2}
-```
-where $`C`$ are the CG coefficients that assure the resulting vector is type-$`l`$ steerable.
+\end{equation}$$
+where $`C`$ are the CG coefficients that assure the resulting vector is type- $l$ steerable.
 
-This can be used to define a linear mapping between steerable features, which can be used in steerable MLPs. Since $`\tilde{\boldsymbol{a}}`$ is based on the spherical harmonics of the _normalized_ edge feature $`\boldsymbol{e}_{ij} /|| \boldsymbol{e}_{ij} ||`$, this norm $`d=|| \boldsymbol{e}_{ij} ||`$ can be re-introduced in the learnable weights $`\boldsymbol{W}(d)`$, which gives the final linear mapping:
-```math
+This can be used to define a linear mapping between steerable features, which can be used in steerable MLPs. Since $\tilde{\boldsymbol{a}}$ is based on the spherical harmonics of the _normalized_ edge feature $`\boldsymbol{e}_{ij} /|| \boldsymbol{e}_{ij} ||`$, this norm $`d=|| \boldsymbol{e}_{ij} ||`$ can be re-introduced in the learnable weights $`\boldsymbol{W}(d)`$, which gives the final linear mapping:
+$$\begin{equation}
 \boldsymbol{W}_{\boldsymbol{\tilde{a}}}(d)\ \tilde{\boldsymbol{h}}
 :=
 \tilde{\boldsymbol{h}}
 \otimes^{\boldsymbol{W}(d)}_{cg}
 \tilde{\boldsymbol{a}}
-```
+\end{equation}$$
 
 The second part of (steerable) MLPs are the activation functions, which introduce the non-linearity. Currently available activation functions include Fourier-based ([Cohen et al., 2018](https://arxiv.org/abs/1801.10130)), norm-altering ([Thomas et al., 2018](https://arxiv.org/abs/1802.08219)), or gated non-linearities ([Weiler et al., 2018](https://proceedings.neurips.cc/paper/2018/hash/488e4104520c6aab692863cc1dba45af-Abstract.html)) ([Brandstetter et al., 2022](https://doi.org/10.48550/arXiv.2110.02905)).
 
-Message passing networks on steerable features at node $i$ with neighbours $`\mathcal{N}(i)`$ can be summarized as some nonlinearity $`\phi`$ on the steerable feature $`\tilde{\boldsymbol{h}}^{(l)}_i`$ and some aggregated message $`\tilde{\boldsymbol{m}}^{(l)}_i`$. A message $`\tilde{\boldsymbol{m}}_{ij}`$, in turn, is defined as a nonlinearity $`\psi`$ between the neighbouring steerable features $`\tilde{\boldsymbol{h}}^{(l)}_j`$ and the corresponding edge feature $`\boldsymbol{e}_{ij}`$.
-```math
+Message passing networks on steerable features at node $i$ with neighbours $\mathcal{N}(i)$ can be summarized as some nonlinearity $`\phi`$ on the steerable feature $\tilde{\boldsymbol{h}}^{(l)}_i$ and some aggregated message $\tilde{\boldsymbol{m}}^{(l)}_i$. A message $\tilde{\boldsymbol{m}}_{ij}$, in turn, is defined as a nonlinearity $\psi$ between the neighbouring steerable features $\tilde{\boldsymbol{h}}^{(l)}_j$ and the corresponding edge feature $\boldsymbol{e}_{ij}$.
+$$\begin{equation}
 \tilde{\boldsymbol{h}}^{(l_{out})}_i =
 \phi\left(
   \tilde{\boldsymbol{h}}^{(l_n)}_i,\
@@ -182,16 +184,16 @@ Message passing networks on steerable features at node $i$ with neighbours $`\ma
       \tilde{\boldsymbol{h}}^{(l_1)}_j,
       \boldsymbol{e}_{ij}
     \right)
-```
+\end{equation}$$
 
-In this work, updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $`l_m`$) are therefore already of type $`l_{out}`$.
-```math
+In this work, updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $l_m$) are therefore already of type $l_{out}$.
+$$\begin{equation}
 \tilde{\boldsymbol{h}}^{(l_{out})}_i
 := \tilde{\boldsymbol{m}}^{(l_m)}_i
-```
+\end{equation}$$
 
-A message is defined as a single-layer perceptron making use of the CG tensor product as linear mapping parameterized by the edge feature $`\boldsymbol{e}_{ij}`$, and a gated nonlinearity $`\sigma`$
-```math
+A message is defined as a single-layer perceptron making use of the CG tensor product as linear mapping parameterized by the edge feature $\boldsymbol{e}_{ij}$, and a gated nonlinearity $\sigma$
+$$\begin{equation}
 \tilde{\boldsymbol{m}}^{(l_m)}_{ij}
 :=
 \sigma\left(
@@ -203,7 +205,7 @@ A message is defined as a single-layer perceptron making use of the CG tensor pr
 \text{where}
 \quad
 \tilde{\boldsymbol{a}}^{(l_e)}_{ij} = \left( Y^{(l_e)}_m\left( \frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||} \right) \right)^T_{m=-l_e, \ldots, l_e}
-```
+\end{equation}$$
 
 ### 3.4. Method
 
@@ -211,17 +213,17 @@ A message is defined as a single-layer perceptron making use of the CG tensor pr
 The Atom3D dataset uses protein as input, which consists of atoms and their position in euclidean space, and aims to predict some properties of the structure, as described in [Section 3.1](#31-tasks). As such, the model in this work takes as input a set of nodes, with their position and a label (indicating the atom type).
 
 #### Model
-Using the position of each atom, edges are drawn between any two nodes less than or equal to $`4.5`$ units (Angstroms) apart, which are encoded into a steerable vector in $`V_{edge}=V_0 \otimes V_1`$ (one type-$`0`$ and one type-$`1`$ steerable feature).
+Using the position of each atom, edges are drawn between any two nodes less than or equal to $`4.5`$ units (Angstroms) apart, which are encoded into a steerable vector in $V_{edge}=V_0 \otimes V_1$ (one type- $0$ and one type- $1$ steerable feature).
 
-Each node label is embedded into a $`n_{embed}=32`$-dimensional vector, with the equivalent steerable vector in $`n_{embed}\,V_0`$ ($`32`$ type-$`0`$ steerable features).
+Each node label is embedded into a $n_{embed}=32$-dimensional vector, with the equivalent steerable vector in $n_{embed}\,V_0$ ($32$ type- $0$ steerable features).
 
-Next are $`3`$ message passing layers, with hidden node features with $`128`$ coefficients, balanced across type-$`0`$ and $`1`$ vectors, which gives $`(65 V_0) \otimes (21 V_1)`$ ($`65`$ scalar features and $`21`$ geometric vectors, which has $`63`$ coefficients and combines to give a $`128`$-dimensional feature). The final message passing layer outputs only type-$`0`$ features. If no dense layers are enabled, the output of the final convolutional layer is in $`1V_0`$ (a single scalar) per node. With the dense layers, the output is in $`16 V_0`$, which is put through a 2-layer perceptron with a hidden size of $`32`$ and final output size of $`1`$ (per node).
+Next are $3$ message passing layers, with hidden node features with $128$ coefficients, balanced across type- $0$ and $1$ vectors, which gives $(65 V_0) \otimes (21 V_1)$ ($65$ scalar features and $21$ geometric vectors, which has $63$ coefficients and combines to give a $128$-dimensional feature). The final message passing layer outputs only type- $0$ features. If no dense layers are enabled, the output of the final convolutional layer is in $1V_0$ (a single scalar) per node. With the dense layers, the output is in $16 V_0$, which is put through a 2-layer perceptron with a hidden size of $32$ and final output size of $1$ (per node).
 
-Each message passing layer conditions the weights of the CG tensor product on the norm of the corresponding edge feature. This is done by first using Radial Basis Functions to obtain a $`10`$-dimensional encoding of this norm, and using a $`2`$ layer perceptron with a hidden size of $`16`$ and output size appropraite for the tensor product. The hidden layer also makes use of a SiLU activation function.
+Each message passing layer conditions the weights of the CG tensor product on the norm of the corresponding edge feature. This is done by first using Radial Basis Functions to obtain a $10$-dimensional encoding of this norm, and using a $2$ layer perceptron with a hidden size of $16$ and output size appropraite for the tensor product. The hidden layer also makes use of a SiLU activation function.
 
 The final node embeddings are aggregated using a global mean pooling layer.
 
-All convolutional layers use gated-nonlinearities, with SiLU activation function for the type-$`0`$ features, and a sigmoid-gated type-$`l>0`$ features. The dense layers, if present, use ReLU activation functions and a dropout with $`p=0.1`$. The final convolutional and final dense layer do not have any activation functions.
+All convolutional layers use gated-nonlinearities, with SiLU activation function for the type- $0$ features, and a sigmoid-gated type-$l>0$ features. The dense layers, if present, use ReLU activation functions and a dropout with $p=0.1$. The final convolutional and final dense layer do not have any activation functions.
 
 
 ### 3.5. Testing Equivariance
