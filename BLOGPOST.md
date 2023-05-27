@@ -61,7 +61,7 @@ The authors of the original paper use eight tasks from Atom3D ([Townshend et al.
 
 #### LBA
 
-“*Ligand Binding Affinity*” is a regression task with the goal to predict the binding affinity of a protein-ligand complex. This complex describes the binding interactions between a small molecule *ligand* and its target *protein*. These interactions can result in gain or loss of functional effects that can be utilized for a beneficial medicinal effect. Predicting and determining the intermolecular forces that affect binding between a protein and potential ligand therefore plays an important role in optimizing the drug discovery process. In this task, the goal of the model is to predict the binding affinity between the biomolecule and its ligand. Here, the affinity is described as the negative logarithm of the equilibrium dissociation constant $K_D$, which serves as a robust measure for indicating the presence of strong binding interactions. <!-- This task was provided with different training/validation splits. --> ([Wang et al., 2004](https://doi.org/10.1021/jm030580l); [Liu et al., 2015](https://doi.org/10.1093/bioinformatics/btu626))
+“*Ligand Binding Affinity*” is a regression task with the goal to predict the binding affinity of a protein-ligand complex. This complex describes the binding interactions between a small molecule *ligand* and its target *protein*. These interactions can result in gain or loss of functional effects that can be utilized for a beneficial medicinal effect. Predicting and determining the intermolecular forces that affect binding between a protein and potential ligand therefore plays an important role in optimizing the drug discovery process. In this task, the goal of the model is to predict the binding affinity between the biomolecule and its ligand. Here, the affinity is described as the negative logarithm of the equilibrium dissociation constant $K_D$, which serves as a robust measure for indicating the presence of strong binding interactions. <!-- This task was provided with different training/validation splits. --> ([Liu et al., 2015](https://doi.org/10.1093/bioinformatics/btu626); [Wang et al., 2004](https://doi.org/10.1021/jm030580l))
 
 #### SMP
 
@@ -73,11 +73,11 @@ The authors of the original paper use eight tasks from Atom3D ([Townshend et al.
 
 #### PSR
 
-“*Protein Structure Ranking*” is a regression task that predicts the global distance test (GDT_TS) of the true structure and each of the predicted structures submitted in the previous 18 years of the Critical Assessment of protein Structure Prediction (CASP). One of the main workhorses of the cell are proteins; understanding, and designing for, their function <!-- frequently --> depends on understanding their structure. ([Kryshtafovych, A. et al., 2019](https://doi.org/10.1002/prot.25823))
+“*Protein Structure Ranking*” is a regression task that predicts the global distance test (GDT_TS) of the true structure and each of the predicted structures submitted in the previous 18 years of the Critical Assessment of protein Structure Prediction (CASP). One of the main workhorses of the cell are proteins; understanding, and designing for, their function <!-- frequently --> depends on understanding their structure. ([Kryshtafovych et al., 2019](https://doi.org/10.1002/prot.25823))
 
 #### RSR
 
-“*RNA Structure Ranking*” is a regression task that aims to predict the root mean squared deviation (RMSD) from the ground truth structure to candidate RNA models. Structural information on the three-dimensional orientation of RNA is relatively low compared to proteins. Developing tools that can help predict their conformation can therefore prove to be essential in future research. The candidate models are obtained through the FARFAR2 and the RNA Puzzle Challenge ([Watkins et al., 2020](https://doi.org/10.1016/j.str.2020.05.011); [Cruz et al., 2012](https://doi.org/10.1261/rna.031054.111))
+“*RNA Structure Ranking*” is a regression task that aims to predict the root mean squared deviation (RMSD) from the ground truth structure to candidate RNA models. Structural information on the three-dimensional orientation of RNA is relatively low compared to proteins. Developing tools that can help predict their conformation can therefore prove to be essential in future research. The candidate models are obtained through the FARFAR2 and the RNA Puzzle Challenge ([Cruz et al., 2012](https://doi.org/10.1261/rna.031054.111); [Watkins et al., 2020](https://doi.org/10.1016/j.str.2020.05.011))
 
 ### 3.2. Reproduction
 
