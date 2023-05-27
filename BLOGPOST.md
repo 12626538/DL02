@@ -136,11 +136,11 @@ $$\begin{equation}
 
 
 In geometric graph neural networks, geometric information can be encoded in the edge features between two nodes. Let $\boldsymbol{x}_i,\boldsymbol{x}_j$ be the euclidean coordinates of two nodes in $\mathbb{R}^3$, a (translation invariant) edge feature can be defined as $\boldsymbol{e}_{ij} = \boldsymbol{x}_j  - \boldsymbol{x}_i$. The corresponding type- $l$ steerable edge feature $\tilde{\boldsymbol{a}}$ can now be defined using the *spherical harmonics* $Y^{(l)}_m: S^2 \rightarrow \mathbb{R}$ at $\frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||}$
-$$\begin{equation}
-\tilde{\boldsymbol{a}}^{(l)} = \left( Y^{(l)}_m\left( \frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||} \right) \right)^T_{m=-l, \ldots, l}
-\end{equation}$$
+
+$$\begin{equation} \tilde{\boldsymbol{a}}^{(l)} = \left( Y^{(l)}_m\left( \frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||} \right) \right)^T_{m=-l, \ldots, l}\end{equation}$$
 
 Using two steerable features $\tilde{\boldsymbol{h}}^{(l_1)},\tilde{\boldsymbol{h}}^{(l_2)}$ of type- $l_1$ and - $l_2$, the Clebsch-Gordan (CG) tensor product $\otimes_{cg}$ can be used to obtain a new type- $l$ steerable vector $\tilde{\boldsymbol{h}}^{(l)}$ and can furthermore be parameterized by learnable weights $\boldsymbol{W}$:
+
 $$\begin{equation}
 (
   \tilde{\boldsymbol{h}}^{(l_1)}
@@ -153,9 +153,11 @@ w_m
   C_{(l_1,m_1),(l_2,m_2)}^{(l,m)}
   h^{(l_1)}_{m_1} h^{(l_2)}_{m_2}
 \end{equation}$$
-where $`C`$ are the CG coefficients that assure the resulting vector is type- $l$ steerable.
 
-This can be used to define a linear mapping between steerable features, which can be used in steerable MLPs. Since $\tilde{\boldsymbol{a}}$ is based on the spherical harmonics of the _normalized_ edge feature $`\boldsymbol{e}_{ij} /|| \boldsymbol{e}_{ij} ||`$, this norm $`d=|| \boldsymbol{e}_{ij} ||`$ can be re-introduced in the learnable weights $`\boldsymbol{W}(d)`$, which gives the final linear mapping:
+where $C$ are the CG coefficients that assure the resulting vector is type- $l$ steerable.
+
+This can be used to define a linear mapping between steerable features, which can be used in steerable MLPs. Since $\tilde{\boldsymbol{a}}$ is based on the spherical harmonics of the _normalized_ edge feature $\boldsymbol{e}_{ij} /|| \boldsymbol{e}_{ij} ||$, this norm $d=|| \boldsymbol{e}_{ij} ||$ can be re-introduced in the learnable weights $\boldsymbol{W}(d)$, which gives the final linear mapping:
+
 $$\begin{equation}
 \boldsymbol{W}_{\boldsymbol{\tilde{a}}}(d)\ \tilde{\boldsymbol{h}}
 :=
@@ -166,7 +168,8 @@ $$\begin{equation}
 
 The second part of (steerable) MLPs are the activation functions, which introduce the non-linearity. Currently available activation functions include Fourier-based ([Cohen et al., 2018](https://arxiv.org/abs/1801.10130)), norm-altering ([Thomas et al., 2018](https://arxiv.org/abs/1802.08219)), or gated non-linearities ([Weiler et al., 2018](https://proceedings.neurips.cc/paper/2018/hash/488e4104520c6aab692863cc1dba45af-Abstract.html)) ([Brandstetter et al., 2022](https://doi.org/10.48550/arXiv.2110.02905)).
 
-Message passing networks on steerable features at node $i$ with neighbours $\mathcal{N}(i)$ can be summarized as some nonlinearity $`\phi`$ on the steerable feature $\tilde{\boldsymbol{h}}^{(l)}_i$ and some aggregated message $\tilde{\boldsymbol{m}}^{(l)}_i$. A message $\tilde{\boldsymbol{m}}_{ij}$, in turn, is defined as a nonlinearity $\psi$ between the neighbouring steerable features $\tilde{\boldsymbol{h}}^{(l)}_j$ and the corresponding edge feature $\boldsymbol{e}_{ij}$.
+Message passing networks on steerable features at node $i$ with neighbours $\mathcal{N}(i)$ can be summarized as some nonlinearity $\phi$ on the steerable feature $\tilde{\boldsymbol{h}}^{(l)}_i$ and some aggregated message $\tilde{\boldsymbol{m}}^{(l)}_i$. A message $\tilde{\boldsymbol{m}}_{ij}$, in turn, is defined as a nonlinearity $\psi$ between the neighbouring steerable features $\tilde{\boldsymbol{h}}^{(l)}_j$ and the corresponding edge feature $\boldsymbol{e}_{ij}$.
+
 $$\begin{equation}
 \tilde{\boldsymbol{h}}^{(l_{out})}_i =
 \phi\left(
@@ -187,12 +190,11 @@ $$\begin{equation}
 \end{equation}$$
 
 In this work, updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $l_m$) are therefore already of type $l_{out}$.
-$$\begin{equation}
-\tilde{\boldsymbol{h}}^{(l_{out})}_i
-:= \tilde{\boldsymbol{m}}^{(l_m)}_i
-\end{equation}$$
+
+$$\begin{equation}\tilde{\boldsymbol{h}}^{(l_{out})}_i := \tilde{\boldsymbol{m}}^{(l_m)}_i \end{equation}$$
 
 A message is defined as a single-layer perceptron making use of the CG tensor product as linear mapping parameterized by the edge feature $\boldsymbol{e}_{ij}$, and a gated nonlinearity $\sigma$
+
 $$\begin{equation}
 \tilde{\boldsymbol{m}}^{(l_m)}_{ij}
 :=
@@ -213,7 +215,7 @@ $$\begin{equation}
 The Atom3D dataset uses protein as input, which consists of atoms and their position in euclidean space, and aims to predict some properties of the structure, as described in [Section 3.1](#31-tasks). As such, the model in this work takes as input a set of nodes, with their position and a label (indicating the atom type).
 
 #### Model
-Using the position of each atom, edges are drawn between any two nodes less than or equal to $`4.5`$ units (Angstroms) apart, which are encoded into a steerable vector in $V_{edge}=V_0 \otimes V_1$ (one type- $0$ and one type- $1$ steerable feature).
+Using the position of each atom, edges are drawn between any two nodes less than or equal to $4.5$ units (Angstroms) apart, which are encoded into a steerable vector in $V_{edge}=V_0 \otimes V_1$ (one type- $0$ and one type- $1$ steerable feature).
 
 Each node label is embedded into a $n_{embed}=32$-dimensional vector, with the equivalent steerable vector in $n_{embed}\,V_0$ ($32$ type- $0$ steerable features).
 
