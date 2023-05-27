@@ -134,9 +134,11 @@ From these results we conclude that the LBA task is close enough to the original
 ### 3.3 Steerable MLP
 <!-- Jip schrijft hier nog wat meer met steerable -->
 
-This section is mostly extracted from _Geometric and Physical Quantities improve $E(3)$ Equivariant Message Passing_ [(Brandstetter et al., 2022)](https://doi.org/10.48550/arXiv.2110.02905).
+This section is mostly extracted from _Geometric and Physical Quantities improve $E(3)$ Equivariant Message Passing_ ([Brandstetter et al., 2022](https://doi.org/10.48550/arXiv.2110.02905)).
 
 Steerable features are a type of vector that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\tilde{\boldsymbol{h}}$). The type of this vector indicates the type of information it holds, where (most commonly used in this work) type-$0$ are scalar features and type-$1$ are euclidean (XYZ) vectors. More general, a type-$l$ steerable feature is a $2l+1$-dimensional vector.
+
+All type-$l$ vectors form some space denoted by $V_l$. The direct sum of independent spaces $V_{l_1}$ and $V_{l_2}$ give a space $V = V_{l_1} \otimes V_{l_2}$, elements of which are steerable vectors of type $l_1$ and $l_2$. $n$ copies of the same type-$l$ vector is an element of $nV_l = \otimes_{i=1}^n V_l$. For example, a $d$-dimensional scalar feature vector is an element of $d V_0$ ($d$ times type-$0$ vectors).
 
 Steerable MLP are a type of Multi-Layer Perceptrons that, just like regular MLPs, interleave linear mapping with non-linearities. Unlike regular MLP, steerable MLP make use of conditional weights, parameterized by a steerable vector $\tilde{\boldsymbol{a}}$. Given a steerable feature vector $\tilde{\boldsymbol{h}}^{(i)}$ at layer $i$, the updated feature vector at $i+1$ can be formalized as
 $$
@@ -172,7 +174,7 @@ $$
 \tilde{\boldsymbol{a}}
 $$
 
-The second part of (steerable) MLPs are the activation functions, which introduce the non-linearity. Currently available activation functions include Fourier-based (Cohen et al., 2018), norm-altering (Thomas et al., 2018), or gated non-linearities (Weiler et al., 2018) (Brandstetter et al., 2022).
+The second part of (steerable) MLPs are the activation functions, which introduce the non-linearity. Currently available activation functions include Fourier-based ([Cohen et al., 2018](https://arxiv.org/abs/1801.10130)), norm-altering ([Thomas et al., 2018](https://arxiv.org/abs/1802.08219)), or gated non-linearities ([Weiler et al., 2018](https://proceedings.neurips.cc/paper/2018/hash/488e4104520c6aab692863cc1dba45af-Abstract.html)) ([Brandstetter et al., 2022](https://doi.org/10.48550/arXiv.2110.02905)).
 
 Message passing networks on steerable features at node $i$ with neighbours $\mathcal{N}(i)$ can be summarized as some nonlinearity $\phi$ on the steerable feature $\tilde{\boldsymbol{h}}^{(l)}_i$ and some aggregated message $\tilde{\boldsymbol{m}}^{(l)}_i$. A message $\tilde{\boldsymbol{m}}_{ij}$, in turn, is defined as a nonlinearity $\psi$ between the neighbouring steerable features $\tilde{\boldsymbol{h}}^{(l)}_j$ and the corresponding edge feature $\boldsymbol{e}_{ij}$.
 $$
@@ -194,12 +196,7 @@ $$
     \right)
 $$
 
-
-### Our implementation
-
-As input, $\tilde{\boldsymbol{h}}^{(l_n)}_i$ are steerable node features of type $l_n$, the edge feature $\boldsymbol{e}_{ij}$ with L2-norm $|| \boldsymbol{e}_{ij} ||$ gives steerable feature $\tilde{\boldsymbol{a}}^{(l_e)}_{ij}$ of type $l_e$. Output are features $\tilde{\boldsymbol{h}}^{(l_{out})}_i$ of type $l_{out}$.
-
-Updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $l_m$) are therefore already of type $l_{out}$.
+In this work, updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $l_m$) are therefore already of type $l_{out}$.
 $$
 \tilde{\boldsymbol{h}}^{(l_{out})}_i
 := \tilde{\boldsymbol{m}}^{(l_m)}_i
@@ -220,12 +217,28 @@ $$
 \tilde{\boldsymbol{a}}^{(l_e)}_{ij} = \left( Y^{(l_e)}_m\left( \frac{ \boldsymbol{e}_{ij} }{|| \boldsymbol{e}_{ij} ||} \right) \right)^T_{m=-l_e, \ldots, l_e}
 $$
 
-As input of the model, it takes a graph with only the location and label of nodes. Edges are drawn between any two nodes less than some fixed distance apart, which also provides the one geoemtric vector for each edge. These are then split up in the steerable vectors of type $l_{e}$ using circular harmnoics and their norm. The label of each node is embedded into an $n_{embed}$ dimensional vector, which is equivalent to an $n_{embed}$-dimensional type-$0$ steerable feature vector.
+### 3.4 Method
 
-These node features are then put through several message passing layers, where each intermediate layer uses type $l_{hidden}$ representations, and the final layer has an ouput of type $l_{out}$. For regression tasks (such as in this work), $l_{out}=0$ and the final node embedding is some scalar feature vector of size $n_{out}$. If $n_{out}>1$, these features can be put through a regular MLP to post-process the representations. Finally, the features for each node are aggregated to give the final output.
+#### Data
+The Atom3D dataset uses protein as input, which consists of atoms and their position in euclidean space, and aims to predict some properties of the structure, as described in [Section 3.1](#31-tasks). As such, the model in this work takes as input a set of nodes, with their position and a label (indicating the atom type).
 
+#### Model
+Using the position of each atom, edges are drawn between any two nodes less than or equal to $4.5$ units (Angstroms) apart, which are encoded into a steerable vector in $V_{edge}=V_0 \otimes V_1$ (one type-$0$ and one type-$1$ steerable feature).
 
-### 3.4 Testing Equivariance
+Each node label is embedded into a $n_{embed}=32$-dimensional vector, with the equivalent steerable vector in $n_{embed}\,V_0$ ($32$ type-$0$ steerable features).
+
+Next are $3$ message passing layers, with hidden node features with $128$ coefficients, balanced across type $0$ and $1$ vectors, which gives $(65 V_0) \otimes (21 V_1)$ ($65$ scalar features and $21$ geometric vectors, which has $63$ coefficients and combines to give a $128$-dimensional feature). The final message passing layer outputs only type-$0$ features. If no dense layers are enabled, the output of the final convolutional layer is in $1V_0$ (a single scalar) per node. With the dense layers, the output is in $16 V_0$, which is put through a 2-layer perceptron with a hidden size of $32$ and final output size of $1$ (per node).
+
+Each message passing layer conditions the weights of the CG tensor product on the norm of the corresponding edge feature. This is done by first using Radial Basis Functions to obtain a $10$-dimensional encoding of this norm, and using a $2$ layer perceptron with a hidden size of $16$ and output size appropraite for the tensor product. The hidden layer also makes use of a SiLU activation function.
+
+The final node embeddings are aggregated using a global mean pooling layer.
+
+All convolutional layers use gated-nonlinearities, with SiLU activation function for the type-$0$ features, and a sigmoid-gated type-$l>0$ features. The dense layers, if present, use ReLU activation functions and a dropout with $p=0.1$. The final convolutional and final dense layer do not have any activation functions.
+
+#### Optimization
+The ADAM optimizer with learning rate $10^{-4}$ and further default parameters is used for training. LBA is a regression task, and therefore the MSE loss is used. Training is done with a batch size of $8$.
+
+### 3.5 Testing Equivariance
 
 In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method used by the original authors as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. Since the input of this model is represented using irreducible representations, each individual part needs to be rotated accordingly. So, after sampling a random 3D rotation matrix, it is transformed to do so. The remaining steps of testing equivariance is the same as described in [Section 1](#1-introduction). The implementation for this method/test can be found in this [notebook](./demos/testing_equivariance.ipynb).
 
