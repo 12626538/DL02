@@ -31,7 +31,7 @@ Lastly, as mentioned, the equivariance to rotation of the models is very importa
 2. The vector features are equivariant to rotations, so if the input is rotated, the output should be close to rotating the original output.
 
 <p align="center">
-    <img src="gvp_schematic.png" style="margin:0" alt>
+    <img src="src/gvp_schematic.png" style="margin:0" alt>
 </p>
 <p align="center">
     <em>Figure 1.</em> The original geometric vector perceptron (GVP) reported by Jing et al. in 2020 is shown in the top diagram, while the updated GVP provided in Jing et al. in 2021 is shown in the bottom diagram. Information can now go from the scalar channels to the vector channels due to the replacement of the original vector non-linearity (in red) with vector gating (in blue). Row- or element-wise operations are indicated by circles. The main module of the equivariant GNN is the modified GVP.
