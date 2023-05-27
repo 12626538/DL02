@@ -10,8 +10,9 @@ conda activate gvp
 pip install torch==2.0.0 # required install before the packages
 pip install -r requirements.txt # adjust the wheels with accurate cuda version
 
-# developing the gvp package wihtin the folder (from original authors):
-cd gvp && python setup.py develop # required for importing gvp module
+# develop the gvp package within the folder
+# required for importing gvp module
+cd gvp && python setup.py develop 
 ```
 
 ## Downloading the data
@@ -69,39 +70,39 @@ python run_atom3d.py --test model/<checkpoint> <Additional arguments>
 This returns the task-specific result metrics, which will are reported and discussed in the following [blogpost](./BLOGPOST.md). These results can also be obtained from the model checkpoints with the help of a [notebook](./demos/obtaining_metrics.ipynb).
 
 ## Extending with Steerable MLPs
-TODO explain a bit about the extension and how it differs (compact version of the text in the blogpost.md)
+We want to improve the performance of the GVP layers by eliminating the constraint that the scalar features be independent of the orientation of the geometric features. We anticipate that the scalar properties used as the model's output will be more descriptive of the data's geometry when steerable basis is applied rather than utilizing the norm. Thanks to these steerable bases better communication between the scalar and geometric features, including direction, will be feasible. 
 
 ## Training on ATOM3d with the extended models
-The training of the extended model is similar to the GVP model. The following file, located in 'src', can be used by specifying the task and additional arguments as follows:
+The training of the extended model is similar to the GVP model. The following file, located in `src`, can be used by specifying the task and additional arguments as follows:
 ```
 python run_sMLP.py <TASK> <Additional arguments>
 ```
 These additional arguments again include the task-specifics arguments for `LBA` and `SMP`. It also allows for setting the following properties of the model:
 ```
-* --l-max       >1
-* --embed-dim   
-* --hidden-dim 
-* --depth
+* --l-max       type of hidden representation >1
+* --embed-dim   size of embedding
+* --hidden-dim  dimensionality of hidden irreps
+* --depth       number of convolution layers 
+* --dense       use additional dense layers
 ```
-Then ... TODO: elaborate on these args.
+The dimensionality of the hidden irreducable representations will be balanced across type-l &#8804; l-max.
 
 ## Steerable MLP results
-Below we show short summary of the results obtained by the steerable MLP model, focused on the LBA (split 30 shown) task. 
+Below we show short summary of the results obtained by the steerable MLP model, focused on the LBA (split 30 shown) task.
 
 |                       | RMSE &#8595;  |
 | -------------         | ------------- |
 | GVP (original paper)  | 1.594 &#177; 0.073   | 
 | GVP (reproduced)      | 1.598 &#177; 0.020   |
-| sMLP                  | 1.540 &#177; 0.070  |
-| sMLP (dense)          | 1.522 &#177; 0.069  |
+| sMLP &#8595;          | 1.540 &#177; 0.070  |
+| sMLP (dense) &#8595;  | 1.522 &#177; 0.069  |
 
-<!-- down-arrow &#8595; ->
-<!-- up-arrow &#8593; -->
+Both variants of the sMLP model show a decrease in RSME-value. These results are further discussed in the following [section](./BLOGPOST.md/#4-conclusion).
 
 ## Deep Learning 2
 This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam
 
-As of may 14 2023 the project plan has been completed as follows:
+As of may 27 2023 the project plan has been completed as follows:
 - [x] Study the paper and the original code
 - [x] Create set up for reproduction and expansion of the original paper
 - [x] Recreate the original papers results
