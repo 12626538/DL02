@@ -158,8 +158,8 @@ $$\\begin{align}
       \\right) \\\\[5pt]
   \\boldsymbol{\\tilde m}^{(l\_m)}\_i &=
   \\frac1{\\lvert\\mathcal{N}(i)\\rvert}
-  \\sum\_{j \\in \\mathcal{N}(i)}\\
-      \\boldsymbol{\\tilde m}^{(l\_m)}\_{ij} \\\\[13pt]
+  \\sum\_{j \\in \\mathcal{N}(i)}
+      \\boldsymbol{\\tilde m}^{(l\_m)}\_{ij} \\\\[3pt]
 \\boldsymbol{\\tilde h}^{(l\_{out})}\_i &=
 \\phi\\left(
   \\boldsymbol{\\tilde h}^{(l\_n)}\_i,\\
