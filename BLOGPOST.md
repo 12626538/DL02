@@ -57,29 +57,29 @@ $$
 Doing this for each row in $\\boldsymbol{W}\_h \\boldsymbol{V}$ and taking its norm (row-wise) gives
 
 $$
-\\lvert\\lvert
+\\lVert
 \\begin{bmatrix}
 \\boldsymbol{w}\_1^T \\boldsymbol{V} \\boldsymbol{U}\_1 \\\\
 \\vdots \\\\
 \\boldsymbol{w}\_m^T \\boldsymbol{V} \\boldsymbol{U}\_m
 \\end{bmatrix}
-\\rvert\\rvert
+\\rVert\\,
 = \\begin{bmatrix}
-\\lvert\\lvert\\boldsymbol{w}\_1^T \\boldsymbol{V} \\boldsymbol{U}\_1\\rvert\\rvert \\\\
+\\lVert\\boldsymbol{w}\_1^T \\boldsymbol{V} \\boldsymbol{U}\_1\\rVert \\\\
 \\vdots \\\\
-\\lvert\\lvert\\boldsymbol{w}\_m^T \\boldsymbol{V} \\boldsymbol{U}\_m\\rvert\\rvert
+\\lVert\\boldsymbol{w}\_m^T \\boldsymbol{V} \\boldsymbol{U}\_m\\rVert
 \\end{bmatrix}
 = \\begin{bmatrix}
-\\lvert\\lvert\\boldsymbol{w}\_1^T \\boldsymbol{V}\\rvert\\rvert \\\\
+\\lVert\\boldsymbol{w}\_1^T \\boldsymbol{V}\\rVert \\\\
 \\vdots \\\\
-\\lvert\\lvert\\boldsymbol{w}\_m^T \\boldsymbol{V}\\rvert\\rvert
+\\lVert\\boldsymbol{w}\_m^T \\boldsymbol{V}\\rVert
 \\end{bmatrix}
-= \\lvert\\lvert\\begin{bmatrix}
+=\\,\\lVert\\begin{bmatrix}
 \\boldsymbol{w}\_1^T \\boldsymbol{V} \\\\
 \\vdots \\\\
 \\boldsymbol{w}\_m^T \\boldsymbol{V}
-\\end{bmatrix}\\rvert\\rvert
-= \\lvert\\lvert\\boldsymbol{W}\_h \\boldsymbol{V}\\rvert\\rvert
+\\end{bmatrix}\\rVert\\,
+= \\,\\lVert\\boldsymbol{W}\_h \\boldsymbol{V}\\rVert
 $$
 
 which holds for any set of unitary matrices $\\{ \\boldsymbol{U}\_i \\}\_{i=1}^m$. This shows that the scalar feature produced by GVP module is limited in its expressiveness to the norm of the geometric features it produces. We identified this as the most limiting factor of the GVP module. We aim to improve the expressiveness of this model by improving the sharing between scalar and geometric features to incorporate orientation into the scalar features.
