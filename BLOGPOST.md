@@ -30,7 +30,7 @@ Lastly, as mentioned, the equivariance to rotation of the models is very importa
     <img src="src/gvp_schematic.png" style="margin:0" alt>
 </p>
 <p align="center">
-    <em>Figure 1.</em> The original geometric vector perceptron (GVP) reported by Jing et al. fr0m 2020 is shown in the top diagram, while the updated GVP provided in Jing et al. from 2021 is shown in the bottom diagram. Information can now go from the scalar channels to the vector channels due to the replacement of the original vector non-linearity (in red) with vector gating (in blue). Row- or element-wise operations are indicated by circles. The main module of the equivariant GNN is the modified GVP.
+    <em>Figure 1.</em> The original geometric vector perceptron (GVP) reported by Jing et al. from 2020 is shown in the top diagram, while the updated GVP provided in Jing et al. from 2021 is shown in the bottom diagram. Information can now go from the scalar channels to the vector channels due to the replacement of the original vector non-linearity (in red) with vector gating (in blue). Row- or element-wise operations are indicated by circles. The main module of the equivariant GNN is the modified GVP.
 </p>
 
 ## 2. Strengths and Points of Improvement
