@@ -35,11 +35,9 @@ Lastly, as mentioned, the equivariance to rotation of the models is very importa
 
 ## 2. Strengths and Points of Improvement
 
-The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance, which it achieves using a model of low computational burden. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, the authors introduced vector-gating to retain the rotational equivariance of vector features, but this version of the GVP can only exchange information between scalar and geometric features using scalar values (either the norm or using gating). We aim to improve the expressiveness of this model by improving the sharing between scalar and geometric features to incorporate orientation into the scalar features.
+The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance, which it achieves using a model of low computational burden. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, the authors introduced vector-gating to retain the rotational equivariance of vector features, but this version of the GVP can only exchange information between scalar and geometric features using scalar values (either the norm or using gating).
 
-To formalize the rotation invariance, take the transformation of the scalar features $\\boldsymbol{s} \\in \\mathbb{R}^{s\_{in}} \\mapsto \\boldsymbol{s}' \\in \\mathbb{R}^{s\_{out}}$ in the GVP module such that
-
-<!-- Quadruple backslash intended, GitHub does not render it correctly otherwise -->
+In the final implementation of the GVP module, the scalar features $\\boldsymbol{s} \\in \\mathbb{R}^{s\_{in}} \\mapsto \\boldsymbol{s}' \\in \\mathbb{R}^{s\_{out}}$ are transformed using the following formula
 
 $$\\begin{equation}
 \\boldsymbol{s}'=\\sigma\\left( \\boldsymbol{W}\_m \\begin{bmatrix} \\lVert{\\boldsymbol{W}\_h \\boldsymbol{V}}\\rVert\_2 \\\\ \\boldsymbol{s} \\end{bmatrix} + \\boldsymbol{b} \\right)
@@ -48,6 +46,10 @@ $$\\begin{equation}
 where $\\boldsymbol{W}$ is the weight matrix of the linear layers, $\\boldsymbol{b}$ is a bias vector, $\\sigma$ is some element-wise non-linearity, $\\boldsymbol{V} \\in \\mathbb{R}^{n \\times 3}$ are the geometric features and their norm $\\lVert{\\cdot}\\rVert\_2$ is taken row-wise. $\\boldsymbol{s}'$ is invariant under rotations if, for some unitary $3\\times3$ rotation matrix $\\boldsymbol{U}$, the rotated geometric features $\\boldsymbol{V} \\boldsymbol{U}$ give the same $\\boldsymbol{s'}$ as defined above. This trivially holds, since
 
 $$\\begin{equation} \\lVert{\\boldsymbol{W}\_h \\boldsymbol{V}}\\rVert\_2 = \\lVert{\\boldsymbol{W}\_h \\boldsymbol{V} \\boldsymbol{U}}\\rVert\_2.\\end{equation}$$
+
+However, this norm makes it such that the scalar features are completely independent of the orientation of the different geometric features in $\\boldsymbol{V}$. We identified this as the most limiting factor of the GVP module.
+
+We aim to improve the expressiveness of this model by improving the sharing between scalar and geometric features to incorporate orientation into the scalar features.
 
 ## 3. Our Contribution
 
