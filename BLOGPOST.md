@@ -47,9 +47,42 @@ where $\\boldsymbol{W}$ is the weight matrix of the linear layers, $\\boldsymbol
 
 $$\\begin{equation} \\lVert{\\boldsymbol{W}\_h \\boldsymbol{V}}\\rVert\_2 = \\lVert{\\boldsymbol{W}\_h \\boldsymbol{V} \\boldsymbol{U}}\\rVert\_2.\\end{equation}$$
 
-However, this norm makes it such that the scalar features are completely independent of the orientation of the different geometric features in $\\boldsymbol{V}$. We identified this as the most limiting factor of the GVP module.
+However, this norm makes it such that the scalar features are completely independent of the orientation of the produced geometric features in $\\boldsymbol{W}\_h \\boldsymbol{V}$. In order to assure equivariance under rotations, scalars need to be invariant to the rotation of $\\boldsymbol{W}\_h \\boldsymbol{V}$ as a whole (since scalars transform trivially under rotations) - as shown above -, but the GVP has an even stricter constraint, and is invariant to individual rotations of the rows in $\\boldsymbol{W}\_h \\boldsymbol{V}$.
+Let $\\boldsymbol{w}\_i^T$ be the $i$ th row in $\\boldsymbol{W}\_h \\in \\mathbb{R}^{m \\times n}$. Rotating the $i$ th row in $\\boldsymbol{W}\_h \\boldsymbol{V}$ by some unitary matrix $\\boldsymbol{U}\_i$ gives
 
-We aim to improve the expressiveness of this model by improving the sharing between scalar and geometric features to incorporate orientation into the scalar features.
+$$
+\\boldsymbol{w}\_i^T \\boldsymbol{V} \\boldsymbol{U}\_i
+$$
+
+Doing this for each row in $\\boldsymbol{W}\_h \\boldsymbol{V}$ and taking its norm (row-wise) gives
+
+$$
+\\lvert\\lvert
+\\begin{bmatrix}
+\\boldsymbol{w}\_1^T \\boldsymbol{V} \\boldsymbol{U}\_1 \\\\
+\\vdots \\\\
+\\boldsymbol{w}\_m^T \\boldsymbol{V} \\boldsymbol{U}\_m
+\\end{bmatrix}
+\\rvert\\rvert
+= \\begin{bmatrix}
+\\lvert\\lvert\\boldsymbol{w}\_1^T \\boldsymbol{V} \\boldsymbol{U}\_1\\rvert\\rvert \\\\
+\\vdots \\\\
+\\lvert\\lvert\\boldsymbol{w}\_m^T \\boldsymbol{V} \\boldsymbol{U}\_m\\rvert\\rvert
+\\end{bmatrix}
+= \\begin{bmatrix}
+\\lvert\\lvert\\boldsymbol{w}\_1^T \\boldsymbol{V}\\rvert\\rvert \\\\
+\\vdots \\\\
+\\lvert\\lvert\\boldsymbol{w}\_m^T \\boldsymbol{V}\\rvert\\rvert
+\\end{bmatrix}
+= \\lvert\\lvert\\begin{bmatrix}
+\\boldsymbol{w}\_1^T \\boldsymbol{V} \\\\
+\\vdots \\\\
+\\boldsymbol{w}\_m^T \\boldsymbol{V}
+\\end{bmatrix}\\rvert\\rvert
+= \\lvert\\lvert\\boldsymbol{W}\_h \\boldsymbol{V}\\rvert\\rvert
+$$
+
+which holds for any set of unitary matrices $\\{ \\boldsymbol{U}\_i \\}\_{i=1}^m$. This shows that the scalar feature produced by GVP module is limited in its expressiveness to the norm of the geometric features it produces. We identified this as the most limiting factor of the GVP module. We aim to improve the expressiveness of this model by improving the sharing between scalar and geometric features to incorporate orientation into the scalar features.
 
 ## 3. Our Contribution
 
