@@ -105,7 +105,7 @@ This section is mostly based on the paper “*Geometric and Physical Quantities 
 
 Steerable features are vectors that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\\boldsymbol{\\tilde h}$). The type of this vector indicates the type of information it holds, where the relevant features for this work are type- $0$, scalar features, and type- $1$, 3D euclidean vectors (with $x$, $y$ and $z$ components). More general, a type- $l$ steerable feature is a $2l+1$-dimensional vector.
 
-All type-$l$ vectors form some space denoted by $V\_l$. The *direct sum* of independent spaces $V\_{l\_1}$ and $V\_{l\_2}$ gives the space $V = V\_{l\_1} \\otimes V\_{l\_2}$, elements of which are steerable vectors of type $l\_1$ and $l\_2$. The direct sum of $n$ copies of a type-$l$ vector belongs to $nV\_l = \\otimes\_{i=1}^n V\_l$. For example, a $d$-dimensional scalar feature vector is an element of $d V\_0$, i.e. $d$ instances of type-$0$ vectors.
+All type- $l$ vectors form some space denoted by $V\_l$. The *direct sum* of independent spaces $V\_{l\_1}$ and $V\_{l\_2}$ gives the space $V = V\_{l\_1} \\otimes V\_{l\_2}$, elements of which are steerable vectors of type $l\_1$ and $l\_2$. The direct sum of $n$ copies of a type- $l$ vector belongs to $nV\_l = \\otimes\_{i=1}^n V\_l$. For example, a $d$-dimensional scalar feature vector is an element of $d V\_0$, i.e. $d$ instances of type- $0$ vectors.
 
 Steerable MLPs are a type of Multi-Layer Perceptrons that, just like regular MLPs and GVPs, interleave linear mappings with non-linearities. Unlike traditional MLPs, steerable MLPs make use of conditional weights, parameterized by a steerable vector $\\boldsymbol{\\tilde a}$. Given a steerable feature vector ${\\boldsymbol{\\tilde h}}^{(i)}$ at layer $i$, the updated feature vector at layer $i+1$ can be formalized as
 
@@ -207,7 +207,7 @@ Each message passing layer conditions the weights of the CG tensor product on th
 
 The final node embeddings are aggregated using a global mean pooling layer.
 
-All convolutional layers use gated-nonlinearities, with SiLU activation function for the type- $0$ features and sigmoid-gated type-$l>0$ features. The dense layers, if present, use ReLU activation functions and are trained with a dropout of $p=0.1$. The final convolutional and final dense layer do not have any activation functions.
+All convolutional layers use gated-nonlinearities, with SiLU activation function for the type- $0$ features and sigmoid-gated type- $l>0$ features. The dense layers, if present, use ReLU activation functions and are trained with a dropout of $p=0.1$. The final convolutional and final dense layer do not have any activation functions.
 
 #### Optimization
 
