@@ -8,10 +8,10 @@ Machine learning is increasingly applied to molecular analysis for tasks such as
 
 Proteins are complex biomolecules with a unique three-dimensional structure that is critical to their function and modeling the interactions between non-adjacent amino acids can be challenging. Both CNNs and GNNs are typically translation invariant or equivariant, but these properties cannot be guaranteed for rotations in typical implementations.  Formally, we can define invariance and equivariance as follows:
 
-$$\begin{align}
-\text{Invariance:}   && f(g\cdot x) &= f(x)         \\
-\text{Equivariance:} && f(g\cdot x) &= g\cdot f(x).
-\end{align}$$
+$$\\begin{align}
+\\text{Invariance:}   && f(g\\cdot x) &= f(x)         \\\\
+\\text{Equivariance:} && f(g\\cdot x) &= g\\cdot f(x).
+\\end{align}$$
 
 In order to take more geometric information into account, [Jing et al. (2020)](https://doi.org/10.48550/arXiv.2009.01411) propose a method that combines the strengths of CNNs and GNNs to learn from biomolecular structures. Instead of encoding 3D geometry of proteins, i.e. vector features, in terms of rotation-invariant scalars, they propose that vector features be directly represented as geometric vectors in 3D space at all steps of graph propagation. They claim this approach improves the GNN's ability to reason geometrically and capture the spatial relationships between atoms and residues in a protein structure.
 
@@ -37,17 +37,17 @@ Lastly, as mentioned, the equivariance to rotation of the models is very importa
 
 The current model of the authors manages to combine the strengths of CNNs and GNNs while maintaining the rotation invariance, which it achieves using a model of low computational burden. The invariance for rotation is essential because the orientation of the molecule does not change the characteristics of the molecule. However, the combination of the molecules into a protein does depend on the orientation of (the linkage between) the molecules, e.g. the shape of the protein does affect the characteristics of the protein. This is a weakness in the otherwise strength of the model. In the follow-up paper, the authors introduced vector-gating to retain the rotational equivariance of vector features, but this version of the GVP can only exchange information between scalar and geometric features using scalar values (either the norm or using gating). We aim to improve the expressiveness of this model by improving the sharing between scalar and geometric features to incorporate orientation into the scalar features.
 
-To formalize the rotation invariance, take the transformation of the scalar features $\boldsymbol{s} \in \mathbb{R}^{s_{in}} \mapsto \boldsymbol{s}' \in \mathbb{R}^{s_{out}}$ in the GVP module such that
+To formalize the rotation invariance, take the transformation of the scalar features $\\boldsymbol{s} \\in \\mathbb{R}^{s\_{in}} \\mapsto \\boldsymbol{s}' \\in \\mathbb{R}^{s\_{out}}$ in the GVP module such that
 
 <!-- Quadruple backslash intended, GitHub does not render it correctly otherwise -->
 
-$$\begin{equation}
-\boldsymbol{s}'=\sigma\left( \boldsymbol{W}_m \begin{bmatrix} \lVert{\boldsymbol{W}_h \boldsymbol{V}}\rVert_2 \\\\ \boldsymbol{s} \end{bmatrix} + \boldsymbol{b} \right)
-\end{equation}$$
+$$\\begin{equation}
+\\boldsymbol{s}'=\\sigma\\left( \\boldsymbol{W}\_m \\begin{bmatrix} \\lVert{\\boldsymbol{W}\_h \\boldsymbol{V}}\\rVert\_2 \\\\ \\boldsymbol{s} \\end{bmatrix} + \\boldsymbol{b} \\right)
+\\end{equation}$$
 
-where $\boldsymbol{W}$ is the weight matrix of the linear layers, $\boldsymbol{b}$ is a bias vector, $\sigma$ is some element-wise non-linearity, $\boldsymbol{V} \in \mathbb{R}^{n \times 3}$ are the geometric features and their norm $\lVert{\cdot}\rVert_2$ is taken row-wise. $\boldsymbol{s}'$ is invariant under rotations if, for some unitary $3\times3$ rotation matrix $\boldsymbol{U}$, the rotated geometric features $\boldsymbol{V} \boldsymbol{U}$ give the same $\boldsymbol{s'}$ as defined above. This trivially holds, since
+where $\\boldsymbol{W}$ is the weight matrix of the linear layers, $\\boldsymbol{b}$ is a bias vector, $\\sigma$ is some element-wise non-linearity, $\\boldsymbol{V} \\in \\mathbb{R}^{n \\times 3}$ are the geometric features and their norm $\\lVert{\\cdot}\\rVert\_2$ is taken row-wise. $\\boldsymbol{s}'$ is invariant under rotations if, for some unitary $3\\times3$ rotation matrix $\\boldsymbol{U}$, the rotated geometric features $\\boldsymbol{V} \\boldsymbol{U}$ give the same $\\boldsymbol{s'}$ as defined above. This trivially holds, since
 
-$$\begin{equation} \lVert{\boldsymbol{W}_h \boldsymbol{V}}\rVert_2 = \lVert{\boldsymbol{W}_h \boldsymbol{V} \boldsymbol{U}}\rVert_2.\end{equation}$$
+$$\\begin{equation} \\lVert{\\boldsymbol{W}\_h \\boldsymbol{V}}\\rVert\_2 = \\lVert{\\boldsymbol{W}\_h \\boldsymbol{V} \\boldsymbol{U}}\\rVert\_2.\\end{equation}$$
 
 ## 3. Our Contribution
 
@@ -61,7 +61,7 @@ The authors of the original paper use eight tasks from Atom3D ([Townshend et al.
 
 #### LBA
 
-“*Ligand Binding Affinity*” is a regression task with the goal to predict the binding affinity of a protein-ligand complex. This complex describes the binding interactions between a small molecule *ligand* and its target *protein*. These interactions can result in gain or loss of functional effects that can be utilized for a beneficial medicinal effect. Predicting and determining the intermolecular forces that affect binding between a protein and potential ligand therefore plays an important role in optimizing the drug discovery process. In this task, the goal of the model is to predict the binding affinity between the biomolecule and its ligand. Here, the affinity is described as the negative logarithm of the equilibrium dissociation constant $K_D$, which serves as a robust measure for indicating the presence of strong binding interactions. <!-- This task was provided with different training/validation splits. --> ([Liu et al., 2015](https://doi.org/10.1093/bioinformatics/btu626); [Wang et al., 2004](https://doi.org/10.1021/jm030580l))
+“*Ligand Binding Affinity*” is a regression task with the goal to predict the binding affinity of a protein-ligand complex. This complex describes the binding interactions between a small molecule *ligand* and its target *protein*. These interactions can result in gain or loss of functional effects that can be utilized for a beneficial medicinal effect. Predicting and determining the intermolecular forces that affect binding between a protein and potential ligand therefore plays an important role in optimizing the drug discovery process. In this task, the goal of the model is to predict the binding affinity between the biomolecule and its ligand. Here, the affinity is described as the negative logarithm of the equilibrium dissociation constant $K\_D$, which serves as a robust measure for indicating the presence of strong binding interactions. <!-- This task was provided with different training/validation splits. --> ([Liu et al., 2015](https://doi.org/10.1093/bioinformatics/btu626); [Wang et al., 2004](https://doi.org/10.1021/jm030580l))
 
 #### SMP
 
@@ -73,7 +73,7 @@ The authors of the original paper use eight tasks from Atom3D ([Townshend et al.
 
 #### PSR
 
-“*Protein Structure Ranking*” is a regression task that predicts the global distance test (GDT_TS) of the true structure and each of the predicted structures submitted in the previous 18 years of the Critical Assessment of protein Structure Prediction (CASP). One of the main workhorses of the cell are proteins; understanding, and designing for, their function <!-- frequently --> depends on understanding their structure. ([Kryshtafovych et al., 2019](https://doi.org/10.1002/prot.25823))
+“*Protein Structure Ranking*” is a regression task that predicts the global distance test (GDT\_TS) of the true structure and each of the predicted structures submitted in the previous 18 years of the Critical Assessment of protein Structure Prediction (CASP). One of the main workhorses of the cell are proteins; understanding, and designing for, their function <!-- frequently --> depends on understanding their structure. ([Kryshtafovych et al., 2019](https://doi.org/10.1002/prot.25823))
 
 #### RSR
 
@@ -88,106 +88,106 @@ Our results were as follows:
 |-------------------------|----------------------|-------------|-----------|
 | LBA (Split 30)          | RMSE                 | **1.594**   | **1.598** |
 | LBA (Split 60)          | RMSE                 |      -      |   1.641   |
-| SMP $\mu[D]$            | MAE                  |   0.049     |   0.144   |
-| SMP $\sigma_{gap} [eV]$ | MAE                  |   0.065     |   0.0058  |
-| SMP $U^{at}_0 [eV]$     | MAE                  |   0.143     |   0.0259  |
+| SMP $\\mu[D]$            | MAE                  |   0.049     |   0.144   |
+| SMP $\\sigma\_{gap} [eV]$ | MAE                  |   0.065     |   0.0058  |
+| SMP $U^{at}\_0 [eV]$     | MAE                  |   0.143     |   0.0259  |
 | MSP                     | AUROC                | **0.680**   | **0.672** |
-| PSR                     | global $R_s$         | **0.845**   | **0.854** |
-| PSR                     | mean $R_s$           |   0.511     |   0.602   |
-| RSR                     | global $R_s$         | **0.330**   | **0.331** |
-| RSR                     | mean $R_s$           |   0.221     |   0.018   |
+| PSR                     | global $R\_s$         | **0.845**   | **0.854** |
+| PSR                     | mean $R\_s$           |   0.511     |   0.602   |
+| RSR                     | global $R\_s$         | **0.330**   | **0.331** |
+| RSR                     | mean $R\_s$           |   0.221     |   0.018   |
 
-From these results we conclude that the LBA task is close enough to the original paper that our reproduction is successful. Although MSP is close enough to use for the adaption as well, training the model for this task took nearly 10 hours, for this reason we decided to focus only on LBA. The reproductions for the PSR and RSR tasks have a similar global $R_s$, however, the mean $R_s$ deviates significantly and we do not use this task for further research. The SMP task does not show reproduced results.
+From these results we conclude that the LBA task is close enough to the original paper that our reproduction is successful. Although MSP is close enough to use for the adaption as well, training the model for this task took nearly 10 hours, for this reason we decided to focus only on LBA. The reproductions for the PSR and RSR tasks have a similar global $R\_s$, however, the mean $R\_s$ deviates significantly and we do not use this task for further research. The SMP task does not show reproduced results.
 
 ### 3.3. Steerable MLP
 
 This section is mostly based on the paper “*Geometric and Physical Quantities improve* $E(3)$ *Equivariant Message Passing*” ([Brandstetter et al., 2022](https://doi.org/10.48550/arXiv.2110.02905)).
 
-Steerable features are vectors that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\boldsymbol{\tilde h}$). The type of this vector indicates the type of information it holds, where the relevant features for this work are type- $0$, scalar features, and type- $1$, 3D euclidean vectors (with $x$, $y$ and $z$ components). More general, a type- $l$ steerable feature is a $2l+1$-dimensional vector.
+Steerable features are vectors that behave equivariant under transformations parameterized by $g$. This work uses $SO(3)$ steerable features, denoted with a tilde ($\\boldsymbol{\\tilde h}$). The type of this vector indicates the type of information it holds, where the relevant features for this work are type- $0$, scalar features, and type- $1$, 3D euclidean vectors (with $x$, $y$ and $z$ components). More general, a type- $l$ steerable feature is a $2l+1$-dimensional vector.
 
-All type-$l$ vectors form some space denoted by $V_l$. The *direct sum* of independent spaces $V_{l_1}$ and $V_{l_2}$ gives the space $V = V_{l_1} \otimes V_{l_2}$, elements of which are steerable vectors of type $l_1$ and $l_2$. The direct sum of $n$ copies of a type-$l$ vector belongs to $nV_l = \otimes_{i=1}^n V_l$. For example, a $d$-dimensional scalar feature vector is an element of $d V_0$, i.e. $d$ instances of type-$0$ vectors.
+All type-$l$ vectors form some space denoted by $V\_l$. The *direct sum* of independent spaces $V\_{l\_1}$ and $V\_{l\_2}$ gives the space $V = V\_{l\_1} \\otimes V\_{l\_2}$, elements of which are steerable vectors of type $l\_1$ and $l\_2$. The direct sum of $n$ copies of a type-$l$ vector belongs to $nV\_l = \\otimes\_{i=1}^n V\_l$. For example, a $d$-dimensional scalar feature vector is an element of $d V\_0$, i.e. $d$ instances of type-$0$ vectors.
 
-Steerable MLPs are a type of Multi-Layer Perceptrons that, just like regular MLPs and GVPs, interleave linear mappings with non-linearities. Unlike traditional MLPs, steerable MLPs make use of conditional weights, parameterized by a steerable vector $\boldsymbol{\tilde a}$. Given a steerable feature vector ${\boldsymbol{\tilde h}}^{(i)}$ at layer $i$, the updated feature vector at layer $i+1$ can be formalized as
+Steerable MLPs are a type of Multi-Layer Perceptrons that, just like regular MLPs and GVPs, interleave linear mappings with non-linearities. Unlike traditional MLPs, steerable MLPs make use of conditional weights, parameterized by a steerable vector $\\boldsymbol{\\tilde a}$. Given a steerable feature vector ${\\boldsymbol{\\tilde h}}^{(i)}$ at layer $i$, the updated feature vector at layer $i+1$ can be formalized as
 
-$$\begin{equation}
-\boldsymbol{\tilde h}^{(i+1)} = \boldsymbol{W}^{(i)}_{\boldsymbol{\tilde a}}\ \boldsymbol{\tilde h}^{(i)}
-\end{equation}$$
+$$\\begin{equation}
+\\boldsymbol{\\tilde h}^{(i+1)} = \\boldsymbol{W}^{(i)}\_{\\boldsymbol{\\tilde a}}\\ \\boldsymbol{\\tilde h}^{(i)}
+\\end{equation}$$
 
-In geometric graph neural networks, geometric information can be encoded in the edge features between two nodes. Let $\boldsymbol{x}_i,\boldsymbol{x}_j$ be the euclidean coordinates of two nodes in $\mathbb{R}^3$, then a translation invariant edge feature can be defined as $\boldsymbol{e}_{ij} = \boldsymbol{x}_j  - \boldsymbol{x}_i$. The corresponding type- $l$ steerable edge feature $\boldsymbol{\tilde a}$ can now be defined using the *spherical harmonics* $Y^{(l)}_m: S^2 \rightarrow \mathbb{R}$ at $\frac{ \boldsymbol{e}_{ij} }{\lVert \boldsymbol{e}_{ij} \rVert}$
+In geometric graph neural networks, geometric information can be encoded in the edge features between two nodes. Let $\\boldsymbol{x}\_i,\\boldsymbol{x}\_j$ be the euclidean coordinates of two nodes in $\\mathbb{R}^3$, then a translation invariant edge feature can be defined as $\\boldsymbol{e}\_{ij} = \\boldsymbol{x}\_j  - \\boldsymbol{x}\_i$. The corresponding type- $l$ steerable edge feature $\\boldsymbol{\\tilde a}$ can now be defined using the *spherical harmonics* $Y^{(l)}\_m: S^2 \\rightarrow \\mathbb{R}$ at $\\frac{ \\boldsymbol{e}\_{ij} }{\\lVert \\boldsymbol{e}\_{ij} \\rVert}$
 
-$$\begin{equation}
-\boldsymbol{\tilde a}^{(l)} = \left( Y^{(l)}_m\left( \frac{ \boldsymbol{e}_{ij} }{\lVert \boldsymbol{e}_{ij} \rVert} \right) \right)^T_{m=-l, \dots, l}
-\end{equation}$$
+$$\\begin{equation}
+\\boldsymbol{\\tilde a}^{(l)} = \\left( Y^{(l)}\_m\\left( \\frac{ \\boldsymbol{e}\_{ij} }{\\lVert \\boldsymbol{e}\_{ij} \\rVert} \\right) \\right)^T\_{m=-l, \\dots, l}
+\\end{equation}$$
 
-Using two steerable features ${\boldsymbol{\tilde h}}^{(l_1)}$, ${\boldsymbol{\tilde h}}^{(l_2)}$ of type- $l_1$ and - $l_2$, the Clebsch-Gordan (CG) tensor product $\otimes_{cg}$ can be used to obtain a new type- $l$ steerable vector $\boldsymbol{\tilde h}^{(l)}$ and can furthermore be parameterized by learnable weights $\boldsymbol{W}$:
+Using two steerable features ${\\boldsymbol{\\tilde h}}^{(l\_1)}$, ${\\boldsymbol{\\tilde h}}^{(l\_2)}$ of type- $l\_1$ and - $l\_2$, the Clebsch-Gordan (CG) tensor product $\\otimes\_{cg}$ can be used to obtain a new type- $l$ steerable vector $\\boldsymbol{\\tilde h}^{(l)}$ and can furthermore be parameterized by learnable weights $\\boldsymbol{W}$:
 
-$$\begin{equation}
-\left(
-  \boldsymbol{\tilde h}^{(l_1)}
-  \otimes^{\boldsymbol{W}}_{cg}
-  \boldsymbol{\tilde h}^{(l_2)}
-\right)_m^{(l)} =
-w_m
-\sum_{m_1=-l_1}^{l_1}
-\sum_{m_2=-l_2}^{l_2}
-  C_{(l_1,m_1),(l_2,m_2)}^{(l,m)}
-  h^{(l_1)}_{m_1} h^{(l_2)}_{m_2}
-\end{equation}$$
+$$\\begin{equation}
+\\left(
+  \\boldsymbol{\\tilde h}^{(l\_1)}
+  \\otimes^{\\boldsymbol{W}}\_{cg}
+  \\boldsymbol{\\tilde h}^{(l\_2)}
+\\right)\_m^{(l)} =
+w\_m
+\\sum\_{m\_1=-l\_1}^{l\_1}
+\\sum\_{m\_2=-l\_2}^{l\_2}
+  C\_{(l\_1,m\_1),(l\_2,m\_2)}^{(l,m)}
+  h^{(l\_1)}\_{m\_1} h^{(l\_2)}\_{m\_2}
+\\end{equation}$$
 
 where $C$ are the CG coefficients that assure the resulting vector is type- $l$ steerable.
 
-This can be used to define a linear mapping between steerable features, which can be used in steerable MLPs. Since $\boldsymbol{\tilde a}$ is based on the spherical harmonics of the normalized edge feature $\boldsymbol{e}_{ij} / \lVert \boldsymbol{e}_{ij} \rVert$, this norm $d=\lVert \boldsymbol{e}_{ij} \rVert$ can be re-introduced in the learnable weights $\boldsymbol{W}(d)$, which gives the final linear mapping:
+This can be used to define a linear mapping between steerable features, which can be used in steerable MLPs. Since $\\boldsymbol{\\tilde a}$ is based on the spherical harmonics of the normalized edge feature $\\boldsymbol{e}\_{ij} / \\lVert \\boldsymbol{e}\_{ij} \\rVert$, this norm $d=\\lVert \\boldsymbol{e}\_{ij} \\rVert$ can be re-introduced in the learnable weights $\\boldsymbol{W}(d)$, which gives the final linear mapping:
 
-$$\begin{equation}
-\boldsymbol{W}_{\!\boldsymbol{\tilde a}}(d)\ \boldsymbol{\tilde h}
-\coloneqq
-\boldsymbol{\tilde h}
-\otimes^{\boldsymbol{W}(d)}_{cg}
-\boldsymbol{\tilde a}
-\end{equation}$$
+$$\\begin{equation}
+\\boldsymbol{W}\_{\\!\\boldsymbol{\\tilde a}}(d)\\ \\boldsymbol{\\tilde h}
+\\coloneqq
+\\boldsymbol{\\tilde h}
+\\otimes^{\\boldsymbol{W}(d)}\_{cg}
+\\boldsymbol{\\tilde a}
+\\end{equation}$$
 
 The second part of (steerable) MLPs are the activation functions, which introduce the non-linearity. Currently available activation functions include Fourier-based ([Cohen et al., 2018](https://arxiv.org/abs/1801.10130)), norm-altering ([Thomas et al., 2018](https://arxiv.org/abs/1802.08219)), or gated non-linearities ([Weiler et al., 2018](https://proceedings.neurips.cc/paper/2018/hash/488e4104520c6aab692863cc1dba45af-Abstract.html)) ([Brandstetter et al., 2022](https://doi.org/10.48550/arXiv.2110.02905)).
 
-Message passing networks on steerable features at node $i$ with neighbours $\mathcal{N}(i)$ can be summarized as some nonlinearity $\phi$ on the steerable feature ${\boldsymbol{\tilde h}}^{(l)}_i$ and some aggregated message ${\boldsymbol{\tilde m}}^{(l)}_i$. A message ${\boldsymbol{\tilde m}}_{ij}$, in turn, is defined as a nonlinearity $\psi$ between the neighbouring steerable features ${\boldsymbol{\tilde h}}^{(l)}_j$ and the corresponding edge feature $\boldsymbol{e}_{ij}$.
+Message passing networks on steerable features at node $i$ with neighbours $\\mathcal{N}(i)$ can be summarized as some nonlinearity $\\phi$ on the steerable feature ${\\boldsymbol{\\tilde h}}^{(l)}\_i$ and some aggregated message ${\\boldsymbol{\\tilde m}}^{(l)}\_i$. A message ${\\boldsymbol{\\tilde m}}\_{ij}$, in turn, is defined as a nonlinearity $\\psi$ between the neighbouring steerable features ${\\boldsymbol{\\tilde h}}^{(l)}\_j$ and the corresponding edge feature $\\boldsymbol{e}\_{ij}$.
 
-$$\begin{align}
-  \boldsymbol{\tilde m}^{(l_m)}_{ij}
-  &= \psi\left(
-        \boldsymbol{\tilde h}^{(l_1)}_j,
-        \boldsymbol{e}_{ij}
-      \right) \\[5pt]
-  \boldsymbol{\tilde m}^{(l_m)}_i &=
-  \frac1{\lvert\mathcal{N}(i)\rvert}
-  \sum_{j \in \mathcal{N}(i)}\
-      \boldsymbol{\tilde m}^{(l_m)}_{ij} \\[13pt]
-\boldsymbol{\tilde h}^{(l_{out})}_i &=
-\phi\left(
-  \boldsymbol{\tilde h}^{(l_n)}_i,\
-  \boldsymbol{\tilde m}^{(l_m)}_i
-\right) \\
-\end{align}$$
+$$\\begin{align}
+  \\boldsymbol{\\tilde m}^{(l\_m)}\_{ij}
+  &= \\psi\\left(
+        \\boldsymbol{\\tilde h}^{(l\_1)}\_j,
+        \\boldsymbol{e}\_{ij}
+      \\right) \\\\[5pt]
+  \\boldsymbol{\\tilde m}^{(l\_m)}\_i &=
+  \\frac1{\\lvert\\mathcal{N}(i)\\rvert}
+  \\sum\_{j \\in \\mathcal{N}(i)}\\
+      \\boldsymbol{\\tilde m}^{(l\_m)}\_{ij} \\\\[13pt]
+\\boldsymbol{\\tilde h}^{(l\_{out})}\_i &=
+\\phi\\left(
+  \\boldsymbol{\\tilde h}^{(l\_n)}\_i,\\
+  \\boldsymbol{\\tilde m}^{(l\_m)}\_i
+\\right) \\\\
+\\end{align}$$
 
-In this work, updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $l_m$) are therefore already of type $l_{out}$.
+In this work, updated node features only depend on the message passed, not the current node feature. Messages (indicated as type $l\_m$) are therefore already of type $l\_{out}$.
 
-$$\begin{equation}
-\boldsymbol{\tilde h}^{(l_{out})}_i
-\coloneqq \boldsymbol{\tilde m}^{(l_m)}_i
-\end{equation}$$
+$$\\begin{equation}
+\\boldsymbol{\\tilde h}^{(l\_{out})}\_i
+\\coloneqq \\boldsymbol{\\tilde m}^{(l\_m)}\_i
+\\end{equation}$$
 
-A message is defined as a single-layer perceptron making use of the CG tensor product as linear mapping parameterized by the edge feature $\boldsymbol{e}_{ij}$, and a gated nonlinearity $\sigma$
+A message is defined as a single-layer perceptron making use of the CG tensor product as linear mapping parameterized by the edge feature $\\boldsymbol{e}\_{ij}$, and a gated nonlinearity $\\sigma$
 
-$$\begin{align}
-\boldsymbol{\tilde m}^{(l_m)}_{ij}
-&\coloneqq
-\sigma\left(
-  {\boldsymbol{\tilde h}}^{(l_n)}_j
-  \otimes^{\boldsymbol{W}(\lVert \boldsymbol{e}_{ij} \rVert)}_{cg}
-  \boldsymbol{{\tilde a}^{(l_e)}_{ij}}
-\right)
-\\
-\text{where} \quad
-{\boldsymbol{\tilde a}}^{(l_e)}_{ij} &\,= \left( Y^{(l_e)}_m\left( \frac{ \boldsymbol{e}_{ij} }{\lVert \boldsymbol{e}_{ij} \rVert} \right) \right)^T_{m=-l_e, \dots, l_e}
-\end{align}$$
+$$\\begin{align}
+\\boldsymbol{\\tilde m}^{(l\_m)}\_{ij}
+&\\coloneqq
+\\sigma\\left(
+  {\\boldsymbol{\\tilde h}}^{(l\_n)}\_j
+  \\otimes^{\\boldsymbol{W}(\\lVert \\boldsymbol{e}\_{ij} \\rVert)}\_{cg}
+  \\boldsymbol{{\\tilde a}^{(l\_e)}\_{ij}}
+\\right)
+\\\\
+\\text{where} \\quad
+{\\boldsymbol{\\tilde a}}^{(l\_e)}\_{ij} &\\,= \\left( Y^{(l\_e)}\_m\\left( \\frac{ \\boldsymbol{e}\_{ij} }{\\lVert \\boldsymbol{e}\_{ij} \\rVert} \\right) \\right)^T\_{m=-l\_e, \\dots, l\_e}
+\\end{align}$$
 
 ### 3.4. Method
 
@@ -197,11 +197,11 @@ The Atom3D dataset provided the proteins that are used as input. The information
 
 #### Model
 
-Edges are drawn between any two nodes less than or equal to $4.5$ Angstroms units apart using the position of each atom. These edges are then encoded into a steerable vector in $V_{edge}=V_0 \otimes V_1$ (one type- $0$ and one type- $1$ steerable feature).
+Edges are drawn between any two nodes less than or equal to $4.5$ Angstroms units apart using the position of each atom. These edges are then encoded into a steerable vector in $V\_{edge}=V\_0 \otimes V\_1$ (one type- $0$ and one type- $1$ steerable feature).
 
-Each node label is embedded into a $32$-dimensional vector $n_{embed}$, with the equivalent steerable vector in $n_{embed}\,V_0$ ($32$ type- $0$ steerable features).
+Each node label is embedded into a $32$-dimensional vector $n\_{embed}$, with the equivalent steerable vector in $n\_{embed}\,V\_0$ ($32$ type- $0$ steerable features).
 
-The input is passed through $3$ message passing layers, with hidden node features with $128$ coefficients, balanced across type- $0$ and $1$ vectors. Specifically, each layer has features $(65 V_0) \otimes (21 V_1)$ ($65$ scalar features and $21$ geometric vectors with $3$ coefficients each combine to $128$-dimensional features). The final message passing layer outputs only type- $0$ features. We develop two variants, one which immediately outputs a single scalar (per node) after the final convolutional layer (a $1V_0$ feature), and a second variant for which the convolutional output is in $16 V_0$ and put through a dense 2-layer perceptron with a hidden size of $32$ and a single scalar output.
+The input is passed through $3$ message passing layers, with hidden node features with $128$ coefficients, balanced across type- $0$ and $1$ vectors. Specifically, each layer has features $(65 V\_0) \otimes (21 V\_1)$ ($65$ scalar features and $21$ geometric vectors with $3$ coefficients each combine to $128$-dimensional features). The final message passing layer outputs only type- $0$ features. We develop two variants, one which immediately outputs a single scalar (per node) after the final convolutional layer (a $1V\_0$ feature), and a second variant for which the convolutional output is in $16 V\_0$ and put through a dense 2-layer perceptron with a hidden size of $32$ and a single scalar output.
 
 Each message passing layer conditions the weights of the CG tensor product on the norm of the corresponding edge feature. This is done by first using Radial Basis Functions to obtain a $10$-dimensional encoding of this norm, and using a $2$ layer perceptron with a hidden size of $16$ and output size appropraite for the tensor product. The hidden layer makes use of a SiLU activation function.
 
@@ -215,7 +215,7 @@ The ADAM optimizer with learning rate $10^{-4}$ and otherwise default parameters
 
 ### 3.5. Testing Equivariance
 
-In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method used by the original authors as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. Since the input of this model is represented using irreducible representations, each individual part needs to be rotated accordingly. So, after sampling a random 3D rotation matrix, it is transformed to do so. The remaining steps of testing equivariance is the same as described in [Section 1](#1-introduction). The implementation for this method/test can be found in this [notebook](./demos/testing_equivariance.ipynb).
+In order to verify if our implementation of the steerable MLP is equivariant to rotation, we need to perform the same method used by the original authors as mentioned before. However, since we work with irreducible representations, the method needs some extra intermediate steps. Since the input of this model is represented using irreducible representations, each individual part needs to be rotated accordingly. So, after sampling a random 3D rotation matrix, it is transformed to do so. The remaining steps of testing equivariance is the same as described in [Section 1](#1-introduction). The implementation for this method/test can be found in this [notebook](./demos/testing\_equivariance.ipynb).
 
 ## 4. Results
 
@@ -279,7 +279,7 @@ The GVP model has lower memory requirements than our sMLP implementation, both i
 
 Once training is done, the GVP model takes 1.7 seconds for 100 inferences when storing gradients and 1.3 s without.  Our sMLP implementation takes respectively 0.52 seconds and 0.46 seconds.
 
-See the result for computational requirements in the supplementary notebook “[latency and memory](./demos/latency_and_memory.ipynb)”.
+See the result for computational requirements in the supplementary notebook “[latency and memory](./demos/latency\_and\_memory.ipynb)”.
 
 ## 5. Conclusion
 
