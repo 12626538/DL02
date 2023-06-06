@@ -100,13 +100,13 @@ Below we show short summary of the results obtained by the steerable MLP model, 
 Both variants of the sMLP model show a decrease in RSME-value. These results are further discussed in the following [section](./BLOGPOST.md/#4-conclusion).
 
 ## Deep Learning 2
-This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, april 2023, University of Amsterdam
+This repository contains the code and final delivery for the mini-project assignment by '*Synthesized Solutions*' for the DL02 course, April 2023, University of Amsterdam
 
-As of may 27 2023 the project plan has been completed as follows:
+As of June 1st 2023 the project plan has been completed as follows:
 - [x] Study the paper and the original code
 - [x] Create set up for reproduction and expansion of the original paper
 - [x] Recreate the original papers results
 - [x] Report on the reproduced results
 - [x] Implement our proposed expansion 
 - [x] Report on the results with expansion
-- [ ] Finish final deliverables and present on June 1st 2023
+- [x] Finish final deliverables and present on June 1st 2023
